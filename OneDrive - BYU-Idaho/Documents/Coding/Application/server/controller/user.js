@@ -18,9 +18,9 @@ module.exports.userReg = (reg) => {
     });
     return newUser.save().then((user, error) => {
         if (user) {
-            console.log(user);
+            return user;
         } else {
-            return false
+            return false;
         }
     });
 
@@ -45,3 +45,27 @@ module.exports.userToken = (reqBody) => {
     })
 };
 
+// Retrieve Users
+module.exports.getUsers = (id) => {
+    return User.findById(id).then(outcome => {	
+        let id = outcome._id;
+        let fName = outcome.firstName;
+        let lName = outcome.lastName;
+        let email = outcome.email;
+        let passW = outcome.password;
+        let userInfo = {
+            _id: id,
+            firstName: fName,
+            lastName: lName,
+            email: email,
+            password: passW,
+        }
+        return userInfo;
+    });
+};
+
+module.exports.getAllUsers = () => {
+    return User.find({}).then(result => {
+        return result
+    });
+};

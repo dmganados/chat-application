@@ -1,9 +1,19 @@
 import React from "react";
+import 'bootstrap/dist/css/bootstrap.css';
+import { Form, Button, Container, Card, Row } from 'react-bootstrap';
+import Contacts from '../components/Contacts'
 
-function Chat() {
-  return (
-    <div>Chat</div>
+export default function Chat() {
+
+  return(
+    <>
+    <Container>
+      <Card id="chatCard">
+        <Contacts />
+      </Card>
+    </Container>
+
+    </>
   )
 }
 
-export default Chat;

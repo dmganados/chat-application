@@ -32,8 +32,7 @@ body {
         margin-right: 70%;
     }
 
-    #frstNameGrp, #lstNameGrp, #emlGrp, #psswrdGrp,
-    #cnrfmPssGrp, #lgnStatement, #lgnLink, .regLabel, .psswrdAlert {
+    .regGroup, #lgnStatement, #lgnLink, .regLabel, .psswrdAlert {
         background-color: #4C6663;
     }
 
@@ -52,5 +51,42 @@ body {
 
     .psswrdAlert {
         font-size: 14px;
+    }
+
+    #lgnForm {
+        width: 50%;
+        margin-top: 10%;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .lgnLabel, .lgnGroup, #lgnCard {
+        background-color: #4C6663;
+    }
+
+    #lgnCard {
+        padding: 5% 10% 5% 10%;
+    }
+
+    .lgnGroup {
+        margin-bottom: 3%;
+    }
+
+    #chatCard {
+        background-color: #4C6663;
+        height: 600px;
+        width: 80%;
+        border-radius: 30px;
+        margin-top: 8%;
+        margin-left: auto;
+        margin-right: auto;
+    }    
+
+    #contacts {
+        margin-top: 5%;
+        width: 35%;
+        height: 100%;
+        background-color: #A7E2E3;
+        margin-left: 0%;
     }
 }
