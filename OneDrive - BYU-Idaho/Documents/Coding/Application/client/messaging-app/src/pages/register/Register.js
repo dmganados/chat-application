@@ -13,7 +13,6 @@ function Register() {
 	const [password2, setPassword2] = useState('');
   const [isActive, setIsActive] = useState(false);
   const [isCorrect, setIsCorrect]= useState(false);
-  const [isFilled, setIsFilled] = useState(false); 
 
   useEffect(() => {
       if (password1 === password2 && password1 !=='' && password2 !== '') {
@@ -30,6 +29,11 @@ function Register() {
 
   },[firstName, lastName, email, password1, password2])
 
+  useEffect(() => {
+		if(localStorage.getItem('accessToken')) {
+			window.location.href = "/chat";
+		}
+	})
 
   const registerUser = async (eventSubmit) => {
     eventSubmit.preventDefault()

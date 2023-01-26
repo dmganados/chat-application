@@ -1,0 +1,36 @@
+@media only screen and (min-width: 992px) {
+    .regForm {
+        width: 50%;
+        margin-top: 10%;
+        margin-left: 30%;
+        margin-right: 70%;
+    }
+
+    #regCard {
+        background-color: #4C6663;
+        padding: 10%;
+        height: auto;
+        width: auto;
+    }
+
+    .regGroup, #lgnStatement, #lgnLink, .regLabel, .psswrdAlert {
+        background-color: #4C6663;
+    }
+
+    .psswrdAlert {
+        font-size: 14px;
+    }
+
+    .regBtn {
+        width: 150px;
+        margin-top: 20px;
+        margin-left: auto;
+        margin-right: auto;
+        
+    }
+
+    #lgnStatement, #lgnLink {
+        margin: 15px auto auto auto;
+        color: black;
+    }
+}

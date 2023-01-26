@@ -5,9 +5,9 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import io from 'socket.io-client';
 
 // Acquire the pages that will make up the app
-import Register from './pages/Register';
-import Login from './pages/Login';
-import Chat from './pages/Chat';
+import Register from './pages/register/Register';
+import Login from './pages/login/Login';
+import Chat from './pages/chat/Chat';
 
 const socket = io.connect("http://localhost:4000")
 export default function App() {

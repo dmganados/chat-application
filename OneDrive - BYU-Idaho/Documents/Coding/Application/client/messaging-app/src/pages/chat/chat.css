@@ -1,0 +1,40 @@
+@media only screen and (min-width: 992px) {
+    #chatCard {        
+        background-color: #4C6663;
+        height: 600px;
+        width: 80%;
+        /* border-radius: 30px; */
+        margin-top: 8%;
+        margin-left: auto;
+        margin-right: auto;
+    }   
+
+    #cntctsCollection {
+        width: 40%;
+        height: 10px;
+        margin-top: 5%;
+        margin-bottom: 5%;
+        background-color: #4C6663;
+        
+    }
+
+    #chatbox {
+        position: absolute;
+        z-index: 1;
+        width: 55%;
+        margin-left: 42%;
+        margin-top: 5%;
+        height: 83%;
+    }
+
+    /* #chtboxDiv {
+        position: absolute;
+        z-index: 1;
+        margin-left: 42%;
+        margin-top: 5%;
+        width: 55%;
+        height: 83%;
+    } */
+
+    
+}

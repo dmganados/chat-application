@@ -1,0 +1,35 @@
+@media only screen and (min-width: 992px) {
+    #txtInput {
+        display: inline-block;
+        width: 80%;
+        margin-top: 80%;        
+    }
+
+    .sndBtn, .sndBtnBorder {
+        background-color: #4C6663 !important;
+    }
+
+    .sndBtnBorder {
+        width: 65px;
+        margin-left: 2%;
+        margin-top: -10%;
+    }
+
+    .chatForm {
+        width: 100%;
+    }
+
+    #chtboxCard {
+        width: 100%;
+    }
+
+    #chtboxDiv {
+        position: absolute;
+        z-index: 1;
+        margin-left: 42%;
+        margin-top: 5%;
+        height: 88%;
+        width: 55%;        
+    }
+
+}

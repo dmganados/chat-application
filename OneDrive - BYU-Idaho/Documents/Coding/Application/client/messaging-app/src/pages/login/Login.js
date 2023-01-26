@@ -1,14 +1,9 @@
 import React from "react";
-import 'bootstrap/dist/css/bootstrap.css';
 import { Form, Button, Container, Card, Row } from 'react-bootstrap';
 import { useState, useEffect, useContext } from 'react';
-import {Navigate} from 'react-router-dom';
-import UserContext from '../UserContext';
-import Swal from 'sweetalert2';
 
 function Login() {
 
-	// const {user, setUser} = useContext(UserContext);
 	const [email, setEmail] = useState('');
 	const [password, setPassword] = useState('');
 
@@ -27,6 +22,12 @@ function Login() {
 			setIsActive(false);
 		}
 	},[email, password, addressSign, dns])
+
+	useEffect(() => {
+		if(localStorage.getItem('accessToken')) {
+			window.location.href = "/chat";
+		}
+	})
 	
 	const loginUser = async (event) => {
 		event.preventDefault();
@@ -52,8 +53,9 @@ function Login() {
 						Authorization: `Bearer ${token}`
 					}
 				}).then(res => res.json()).then(convertedData => {
+					console.log(convertedData)
 					if (typeof convertedData._id !== "undefined") {
-						window.location.href = "/chat";			
+						window.location.href = "/chat";						
 					} else {
 						return null
 					}
@@ -61,12 +63,13 @@ function Login() {
 			} else {
 				alert('Your email or password is incorrect.')
 			}
-
-
 		})
-	}
+	};
 
   return (	
+	// user.id ?
+	// 	<Navigate to="/chat" replace={true} />
+	// :
     <>
       <Container>
         <Form id="lgnForm" onSubmit={e => loginUser(e)}>
