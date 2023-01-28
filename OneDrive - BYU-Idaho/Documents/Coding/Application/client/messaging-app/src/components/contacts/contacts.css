@@ -7,4 +7,14 @@
         font-family: 'Lexend', sans-serif;
         font-size: 20px; 
     }   
+
+    #cntctCard {
+        position: relative;
+        z-index: 1;
+        cursor: pointer;
+    }
+
+    #cntctCard:hover {
+        background-color: rgb(226, 223, 223);
+    }
 }

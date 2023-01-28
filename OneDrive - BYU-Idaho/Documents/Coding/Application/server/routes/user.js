@@ -37,5 +37,14 @@
         })
     })
 
+    route.get('/find/profile', (req, res) => {
+        let userId = req.query.userId
+        controller.findUsers(userId).then(outcome => {
+            res.send(outcome);
+        });
+    });
+
+
+
 // Expose Route System
     module.exports = route;

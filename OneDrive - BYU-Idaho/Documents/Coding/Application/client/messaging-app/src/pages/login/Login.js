@@ -41,7 +41,7 @@ function Login() {
 				email : email,
 				password : password
 			})
-		}).then(res => res.json()).then(data => {
+		}).then(res => res.json()).then(data => {			
 			let token = data.accessToken;
 
 			// Create a control structure to give a proper response to the user 
@@ -53,7 +53,6 @@ function Login() {
 						Authorization: `Bearer ${token}`
 					}
 				}).then(res => res.json()).then(convertedData => {
-					console.log(convertedData)
 					if (typeof convertedData._id !== "undefined") {
 						window.location.href = "/chat";						
 					} else {
@@ -67,9 +66,6 @@ function Login() {
 	};
 
   return (	
-	// user.id ?
-	// 	<Navigate to="/chat" replace={true} />
-	// :
     <>
       <Container>
         <Form id="lgnForm" onSubmit={e => loginUser(e)}>
@@ -94,10 +90,7 @@ function Login() {
 			</Card>		
 			</Row>				
         </Form>
-      </Container>
-
-
-	  
+      </Container>	  
     </>
   )
 }

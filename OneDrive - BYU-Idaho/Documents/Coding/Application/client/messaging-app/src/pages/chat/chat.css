@@ -2,39 +2,60 @@
     #chatCard {        
         background-color: #4C6663;
         height: 600px;
-        width: 80%;
-        /* border-radius: 30px; */
+        width: 100%;
+        display: flex;
         margin-top: 8%;
         margin-left: auto;
         margin-right: auto;
     }   
 
     #cntctsCollection {
-        width: 40%;
+        width: 28%;
         height: 10px;
         margin-top: 5%;
         margin-bottom: 5%;
-        background-color: #4C6663;
-        
+        background-color: #4C6663;        
+    }
+
+    #chatRoom {
+        position: absolute;
+        right: 0px;
+        top: 0px;
+        /* width: 20%;
+        height: 90%; */
+        margin-right: 90px;
+        margin-top: 10.5%;
+        background-color: #4C6663;        
     }
 
     #chatbox {
         position: absolute;
         z-index: 1;
-        width: 55%;
-        margin-left: 42%;
+        width: 40%;
+        margin-left: 32%;
         margin-top: 5%;
-        height: 83%;
+        height: 75%;
+        background-color: whitesmoke;
     }
 
-    /* #chtboxDiv {
-        position: absolute;
-        z-index: 1;
-        margin-left: 42%;
-        margin-top: 5%;
-        width: 55%;
-        height: 83%;
-    } */
+    .textGrp {
+        display: inline-block;       
+    }
 
-    
+    .txtareaForm {
+        margin-left: 32%;
+        background-color: #4C6663;
+    }
+
+    .sndBtn {
+        margin-top: -50px;
+        margin-left: 25%;
+        width: 12%;
+        background-color: #A7E2E3 !important;
+        color: black !important;
+    }
+
+    .textarea {
+        width: 200% !important;        
+    }    
 }

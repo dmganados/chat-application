@@ -69,3 +69,9 @@ module.exports.getAllUsers = () => {
         return result
     });
 };
+
+module.exports.findUsers = (id) => {
+    return User.findById(id).then(result => {
+        return result
+    });
+};

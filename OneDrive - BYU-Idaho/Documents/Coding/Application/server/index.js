@@ -5,6 +5,7 @@
     const cors = require('cors'); 
     const userRoutes = require('./routes/user');
     const messageRoutes = require('./routes/messages');
+    const conversationRoutes = require('./routes/conversations');
     const socket = require("socket.io");
 
 // Environment Variable Setup
@@ -32,6 +33,7 @@
 // Server Routes
     app.use("/user", userRoutes);
     app.use("/message", messageRoutes);
+    app.use("/conversations", conversationRoutes);
 
 // Server Responses
     app.get('/', (req, res) => {
@@ -48,21 +50,21 @@
         }
     });
 
-    // global.onlineUsers = new Map();
+    global.onlineUsers = new Map();
 
     io.on("connection", (socket) => {
-        console.log(`User Connected: ${socket.id}`)
-        // global.chatSocket = socket;
-        // socket.on("add-user", (userId) => {
-        //     onlineUsers.set(userId, socket.id);
-        // });
+        // console.log(`User Connected: ${socket.id}`) 
+        global.chatSocket = socket;
+        socket.on("add-user", (userId) => {
+            onlineUsers.set(userId, socket.id);
+        });
 
         socket.on("disconnect", (data) => {
-            console.log("User diconnected", socket.id)
-            // const sendUserSocket = onlineUsers.get(data.to);
-            // if (sendUserSocket) {
-            //     socket.to(sendUserSocket).emit("msg-receive", data.msg);
-            // }
+            // console.log("User diconnected", socket.id)
+            const sendUserSocket = onlineUsers.get(data.to);
+            if (sendUserSocket) {
+                socket.to(sendUserSocket).emit("msg-receive", data.msg);
+            }
         });
     });
 

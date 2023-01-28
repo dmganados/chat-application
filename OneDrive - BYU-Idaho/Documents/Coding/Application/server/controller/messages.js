@@ -1,21 +1,29 @@
 const Message = require('../model/Message');
 
-module.exports.addMessage = async (req, res, next) => {
-    try {
-        const { from, to, message } = req.body;
-        const data = await Message.create({
-            message: { text: message },
-            users: [from, to],
-            sender: from
-        });
-        if (data) return res.json({ msg: "Message added successfully."});
-        return res.json({ msg: "Failed to add message to Atlas"})
-        
-    } catch (exception) {
-        next(exception)
-    }
+module.exports.addMessage = (data) => {
+    let convoId = data.converstationId;
+    let convo = data.message;
+    let users = data.users;
+    let sndr = data.sender
+
+    let newMessage = new Message({
+        converstationId: convoId,
+        message: convo,
+        users: users,
+        sender: sndr
+    });
+
+    return newMessage.save().then((message, error) => {
+        if (message) {
+            return message;
+        } else {
+            return false;
+        }
+    });
 }
 
-module.exports.allMessages = async (req, res, next) => {
-
+module.exports.getMessage = (id) => {
+    return Message.find({converstationId:id}).then(res => {
+        return res
+    })
 }

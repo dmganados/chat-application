@@ -4,23 +4,23 @@ const mongoose = require('mongoose');
 // [SECTION] Schema
 const messageSchema = new mongoose.Schema(
     {
-        message: {
-            text: {
-                type: String,
-                required: true
-            }
+        converstationId: {
+            type: String
         },
-        users: Array,
         sender: {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: "User",
+            type: String,
             required: true
         },
+        message: {
+            type: String,
+            required: true            
+        }
+        
+       
     },
     {
         timestamps: true
-    }
-    
+    }    
 );
 
 // [SECTION] Model

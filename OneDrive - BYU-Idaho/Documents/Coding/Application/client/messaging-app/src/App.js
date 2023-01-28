@@ -1,7 +1,7 @@
 import React from "react";
 // Implement page routing
 // acquire the utilities from react-router-dom
-import { BrowserRouter, Routes, Route } from 'react-router-dom'
+import { BrowserRouter, Routes, Route, useRoutes } from 'react-router-dom'
 import io from 'socket.io-client';
 
 // Acquire the pages that will make up the app
@@ -16,7 +16,8 @@ export default function App() {
       <Routes>
         <Route path="/" element={<Register />} />
         <Route path="/login" element={<Login />} />
-        <Route path="/chat" element={<Chat />} />
+        <Route path="chat" element={<Chat />} />
+        {/* {['chat', ':id'].map(path => <Route path={path} element={<Chat />} />)}         */}
       </Routes>
     </BrowserRouter>
   )
