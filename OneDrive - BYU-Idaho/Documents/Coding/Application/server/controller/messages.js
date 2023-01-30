@@ -1,13 +1,13 @@
 const Message = require('../model/Message');
 
 module.exports.addMessage = (data) => {
-    let convoId = data.converstationId;
+    let convoId = data.conversationId;
     let convo = data.message;
     let users = data.users;
-    let sndr = data.sender
+    let sndr = data.sender;
 
     let newMessage = new Message({
-        converstationId: convoId,
+        conversationId: convoId,
         message: convo,
         users: users,
         sender: sndr

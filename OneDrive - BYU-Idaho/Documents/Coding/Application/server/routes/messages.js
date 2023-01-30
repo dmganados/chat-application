@@ -8,13 +8,13 @@ const auth = require('../auth');
 // Routing Component
 const route = exp.Router();
 
-route.post('/messages', auth.verify, (req, res) => {
-    let convoId = req.body.converstationId;
+route.post('/messages/:receiverId/:senderId', (req, res) => {
+    let convoId = req.body.conversationId;
     let msgs = req.body.message;
-    let sndr = req.headers.authorization;
-    let rcvr = req.body.receiverId;
+    let sndr = req.params.senderId;
+    let rcvr = req.params.receiverId;
     let msgData = {
-        converstationId: convoId,
+        conversationId: convoId,
         message: msgs,
         users: [sndr, rcvr],
         sender: sndr

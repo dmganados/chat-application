@@ -4,8 +4,9 @@ const mongoose = require('mongoose');
 // [SECTION] Schema
 const messageSchema = new mongoose.Schema(
     {
-        converstationId: {
-            type: String
+        conversationId: {
+            type: String,
+            required: true
         },
         sender: {
             type: String,
@@ -13,7 +14,7 @@ const messageSchema = new mongoose.Schema(
         },
         message: {
             type: String,
-            required: true            
+            // required: true            
         }
         
        

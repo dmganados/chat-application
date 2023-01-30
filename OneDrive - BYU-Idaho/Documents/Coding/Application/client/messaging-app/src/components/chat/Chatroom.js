@@ -3,25 +3,27 @@ import { useState, useEffect } from "react";
 
 export default function Chatroom({conversation, currentUser}) {
     const [user, setUser] = useState(null);
-    // console.log(conversation)
+    let friendId = conversation.users.find((user) => user !== currentUser);
 
-    useEffect(() =>{
-        const friendId = conversation.users.find((user) => user !== currentUser);
-        // console.log(friendId)
-        // const getUser = async () => {
-        //     let res = await fetch('http://localhost:4000/user/find/profile' + friendId).then(res => res.json()).then(friend =>{
-        //         console.log(friend)
-        //     })
-        // }
-        // getUser();
-    },[])
+    useEffect(() =>{ 
+        let getUser = async () => {
+            fetch(`http://localhost:4000/user/profile/${friendId}`).then(res => res.json()).then(friend => {
+                setUser(friend)
+            });
+        };       
+        getUser();
+    },[friendId])
+
     return(
         <>
-            <Container id='chtRmDiv'>     
-                <Card id="chtRmCard">          
-                    <span>Friend Name</span>
+               
+                <Card id='chtRmDiv'>  
+                    <Card.Body id="chtRmCard">
+                    <span className="userName">{user?.firstName} {user?.lastName}</span>
+                    </Card.Body>        
+                    
                 </Card> 
-            </Container>
+            
         </>
     )
 }

@@ -78,7 +78,7 @@
 
     #chtRmDiv {
         width: 300px;
-        height: 350px;
+        height: 40px;
         margin-top: 5%;
         margin-left: 0px;
         font-family: 'Lexend', sans-serif;
@@ -89,11 +89,16 @@
         position: relative;
         z-index: 1;
         cursor: pointer;
-        height: 90%;
+        height: 50%;
     }
 
     #chtRmCard:hover {
         background-color: rgb(226, 223, 223);
+    }
+
+    .userName {
+        display: flex;
+        margin-top: -6px;
     }
 
 

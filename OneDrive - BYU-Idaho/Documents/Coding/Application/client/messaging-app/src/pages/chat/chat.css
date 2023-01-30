@@ -20,11 +20,12 @@
     #chatRoom {
         position: absolute;
         right: 0px;
-        top: 0px;
+        /* top: 0px; */
         /* width: 20%;
         height: 90%; */
-        margin-right: 90px;
-        margin-top: 10.5%;
+        
+        margin-right: 20px;
+        margin-top: 4%;
         background-color: #4C6663;        
     }
 
@@ -34,8 +35,12 @@
         width: 40%;
         margin-left: 32%;
         margin-top: 5%;
-        height: 75%;
+        height: 70%;
         background-color: whitesmoke;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        overflow: scroll;
     }
 
     .textGrp {
@@ -43,19 +48,43 @@
     }
 
     .txtareaForm {
+        position: absolute;
+        z-index: 2;
         margin-left: 32%;
+        /* margin-top: 1%; */
+        margin-top: 40%;
+        width: 30%;
+        height: 10%;
         background-color: #4C6663;
     }
 
+    .textarea {
+        width: 190% !important;        
+        height: 55px;
+    }    
+
     .sndBtn {
-        margin-top: -50px;
-        margin-left: 25%;
-        width: 12%;
+        margin-top: -80px;
+        margin-left: 113%;
+        width: 20%;
         background-color: #A7E2E3 !important;
         color: black !important;
     }
 
-    .textarea {
-        width: 200% !important;        
-    }    
+    .formBody {
+        width: 20%;
+        height: -20%;
+        margin-right: 0px;
+    }
+
+
+
+    .noConvo {
+        display: inline-block;
+        background-color: whitesmoke;
+        margin-left: 100px;
+        margin-top: 40%;
+        font-size: 30px;
+        
+    }
 }

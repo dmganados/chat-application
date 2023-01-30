@@ -37,8 +37,8 @@
         })
     })
 
-    route.get('/find/profile', (req, res) => {
-        let userId = req.query.userId
+    route.get('/profile/:friendId', (req, res) => {
+        let userId = req.params.friendId
         controller.findUsers(userId).then(outcome => {
             res.send(outcome);
         });

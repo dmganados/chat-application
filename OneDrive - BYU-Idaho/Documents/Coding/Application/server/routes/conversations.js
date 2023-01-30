@@ -9,8 +9,8 @@ const auth = require('../auth');
 // Routing Component
 const route = exp.Router();
 
-route.post('/connect/:receiverId', auth.verify, (req, res) => {    
-    let sndr = req.headers.authorization;
+route.post('/connect/:senderId/:receiverId', (req, res) => {    
+    let sndr = req.params.senderId
     let rcvr = req.params.receiverId;
     let connect = {
         senderId: sndr,
@@ -22,7 +22,7 @@ route.post('/connect/:receiverId', auth.verify, (req, res) => {
 });
 
 route.get('/connect/:senderId', (req, res) => {
-    let user = req.params.senderId;
+    let user = req.params.senderId
     controller.getConvo(user).then(result => {
         res.send(result);
     })
