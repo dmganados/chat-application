@@ -8,15 +8,13 @@ const auth = require('../auth');
 // Routing Component
 const route = exp.Router();
 
-route.post('/messages/:receiverId/:senderId', (req, res) => {
+route.post('/messages/:senderId', (req, res) => {
     let convoId = req.body.conversationId;
     let msgs = req.body.message;
     let sndr = req.params.senderId;
-    let rcvr = req.params.receiverId;
     let msgData = {
         conversationId: convoId,
         message: msgs,
-        users: [sndr, rcvr],
         sender: sndr
     }
     controller.addMessage(msgData).then(result => {
@@ -26,7 +24,7 @@ route.post('/messages/:receiverId/:senderId', (req, res) => {
 
 
 
-route.get('/:conversationId', (req, res) => {
+route.get('/messages/:conversationId', (req, res) => {
     let convoId = req.params.conversationId
     controller.getMessage(convoId).then(result => {
         res.send(result)

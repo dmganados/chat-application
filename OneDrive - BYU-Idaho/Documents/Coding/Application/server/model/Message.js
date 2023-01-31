@@ -5,8 +5,7 @@ const mongoose = require('mongoose');
 const messageSchema = new mongoose.Schema(
     {
         conversationId: {
-            type: String,
-            required: true
+            type: String
         },
         sender: {
             type: String,
@@ -14,10 +13,8 @@ const messageSchema = new mongoose.Schema(
         },
         message: {
             type: String,
-            // required: true            
-        }
-        
-       
+            required: true            
+        }       
     },
     {
         timestamps: true

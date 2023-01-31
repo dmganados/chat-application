@@ -79,7 +79,7 @@
     #chtRmDiv {
         width: 300px;
         height: 40px;
-        margin-top: 5%;
+        margin-top: 10%;
         margin-left: 0px;
         font-family: 'Lexend', sans-serif;
         font-size: 20px; 
@@ -99,6 +99,14 @@
     .userName {
         display: flex;
         margin-top: -6px;
+    }
+
+    .banner {
+        background-color: whitesmoke;
+        font-family: 'Lexend', sans-serif;
+        font-size: 25px;
+        width: 84%;
+
     }
 
 

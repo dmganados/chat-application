@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 
 export default function Chatroom({conversation, currentUser}) {
     const [user, setUser] = useState(null);
+    // console.log(conversation)
     let friendId = conversation.users.find((user) => user !== currentUser);
 
     useEffect(() =>{ 
@@ -15,15 +16,12 @@ export default function Chatroom({conversation, currentUser}) {
     },[friendId])
 
     return(
-        <>
-               
-                <Card id='chtRmDiv'>  
-                    <Card.Body id="chtRmCard">
-                    <span className="userName">{user?.firstName} {user?.lastName}</span>
-                    </Card.Body>        
-                    
-                </Card> 
-            
+        <>               
+        <Card id='chtRmDiv'>  
+            <Card.Body id="chtRmCard">
+            <span className="userName">{user?.firstName} {user?.lastName}</span>
+            </Card.Body>      
+        </Card>             
         </>
     )
 }

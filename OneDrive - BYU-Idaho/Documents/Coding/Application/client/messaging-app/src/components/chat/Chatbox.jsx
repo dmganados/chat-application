@@ -1,10 +1,7 @@
-import { Container, Form, Button } from "react-bootstrap"
-import { useState, useEffect } from "react";
 import {format} from 'timeago.js'
 
-export default function Chatbox({chat, ownMsg}) {
-    // console.log(moment(chat.createdAt).fromNow())
-    // console.log(chat)
+export default function Chatbox({chat, names, user, ownMsg}) {
+
     return(
         <>
             <div className={ownMsg ? "messageBox ownMsg" : "messageBox"}>                               
