@@ -1,30 +1,27 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef} from "react";
 import { Form, Button, Container, Card, Row } from 'react-bootstrap';
 import Contacts from '../../components/contacts/Contacts';
 import Chatbox from '../../components/chat/Chatbox';
 import Chatroom from '../../components/chat/Chatroom'
 import ChatBanner from "../../components/chat/Chatbanner";
 import {io} from "socket.io-client"
+import { renderMatches } from "react-router-dom";
 
 export default function Chat() {
 
   const [contactsCollection, setContactsCollection] = useState([]);
   const [conversation, setConversation] = useState([]);
-  const [currentChat, setCurrentChat] = useState([]);
-  const [nameId, setNameId] = useState([]);
+  const [currentChat, setCurrentChat] = useState(null);
   const [chat, setChat] = useState([]);
-  const [friendName, setFriendName] = useState('') 
   const [message, setMessage] = useState('');
   const [userId, setUserId] = useState('');
-  const [socket, setSocket] = useState(null);
-  let convoId = currentChat._id;
-  let token = localStorage.accessToken 
-  console.log(currentChat)
+  const autoScroll = useRef();
+  let convoId = currentChat?._id;
+  let token = localStorage.accessToken;
   
   useEffect(() => {    
     allUsers();
     profile();
-    // chatMate();
     redirect();
   },[])
 
@@ -34,10 +31,6 @@ export default function Chat() {
       window.location.href ="/login"
     }
   }
-
-  useEffect(() => {
-    setSocket(io("ws://localhost:4000"))
-  },[])
 
   // Get the user profile
   const profile = async () => { 
@@ -52,7 +45,6 @@ export default function Chat() {
       let id = data._id;
       setUserId(id)
       fetch(`http://localhost:4000/conversations/connect/${id}`).then(res => res.json()).then(connect => {
-        // console.log(connect)
         setConversation(connect)
       })
     })
@@ -81,7 +73,6 @@ export default function Chat() {
     const getMessage = async () => {    
       try {
         await fetch(`http://localhost:4000/message/messages/${convoId}`).then(res => res.json()).then(data => {
-          // console.log(data)
         setChat(data)
       })
       } catch (error) {
@@ -90,32 +81,17 @@ export default function Chat() {
     } 
     getMessage()
   },[convoId])
-     
 
-  // Create a section where a the name of a friend you currently chatting with is diplayed.
-  // Get user Id, then get profile information to diplay the name 
-  // let friendId = conversation.users.find((id) => id !== userId )
-  // let frnd = currentChat.users.find((friend) => friend !== userId)
-  // console.log(friendId)
-  const chatBanner = async () => {
-    
-    // console.log(name)
-    
 
-    // await fetch(`http://localhost:4000/user/profile/${friendId}`).then(res => res.json()).then(name => {
-    //   console.log(name)
-      // setFriendName(name)
-    // })
-
+  const componentDidMount = () => {
+    const container = document.getElementById('chatview-container')
   }
 
 
   // Create send button function
-  // The user can switch friends to send message
-  // The user can also send message to a friend that is not from the inbox
+  // After the user enters/submit his/her message, a new message will be created.
   const sendChat = async (event) => {   
     event.preventDefault()  
-    // let receiverId = conversation[0].users.find((user) => user !== userId)
     const chatSent = await fetch(`http://localhost:4000/message/messages/${userId}`,{
       method: 'POST',
       headers: {
@@ -125,55 +101,77 @@ export default function Chat() {
         conversationId: convoId,
         message: message
       })
-    }).then(res => res.json()).then(message => {
-      if (message) {        
-        setMessage(message);
+    }).then(res => res.json()).then(sent => {
+      if (sent) {
+        setMessage('')
       } else {
         return false
       }
-    })    
-
-    if (chatSent) {
-      setMessage('')
+    })        
     }
-    
-    }
-  
 
   return(
     <>
     <Container className="chatContainer">
       <Card id="chatCard">
-        <Card.Body className="bannerBody">
-          <ChatBanner />
-        </Card.Body>
+        {/* Chat Banner Section */}
+        {/* Create a section where a the name of a friend you currently chatting with is diplayed. This is diplayed in the banner of the chat*/}
+        {
+          // If there is no friend selected, the name will not be diplayed in the banner.
+          currentChat?          
+            <>
+              <Card.Body className="bannerBody">
+                <ChatBanner activeChat={currentChat?.users} myId={userId} />
+              </Card.Body>
+            </>
+          :
+            <></>
+        }
+        
+        {/* Contact List Section */}
+        {/* Display all the people registered in the app. This is also the contact list */}
         <Card.Body className='overflow-auto' id="cntctsCollection">
           {contactsCollection}
         </Card.Body>         
 
+        {/* Chat Section */}
         <Card.Body className='overflow-auto' id="chatbox">
           {            
-            currentChat ?
-              <>
-                {chat.map((convo) =>(
-                  <Chatbox chat={convo} ownMsg={convo.sender === userId} />
+            currentChat?
+              <div id="chatview-container">
+                {chat.map((convo) =>(                       
+                    <Chatbox chat={convo} ownMsg={convo.sender === userId} />                   
                 ))}
-              </>                        
+              </div>                        
             :
               <>
               <span className="noConvo">Start a conversation</span>
               </>
           }       
         </Card.Body> 
-        
-        <Form className="txtareaForm" onSubmit={e => sendChat(e)}>
-          <Form.Group className="textGrp">
-            <Form.Control as="textarea" className="textarea" placeholder="Enter text here..." 
-            value={message}  onChange={(event) => setMessage(event.target.value)} />
-          </Form.Group>
-          <Button type="submit" className="sndBtn" >Send</Button>
-        </Form>
 
+        {/* Text area and Button */}
+        {
+          currentChat?
+            <>
+            <Form className="txtareaForm">
+              <Form.Group className="textGrp">
+                <Form.Control
+                type="text"                
+                placeholder="Write something..." 
+                value={message}
+                onChange={event => setMessage(event.target.value)}
+                className="textarea"
+                />
+              </Form.Group>
+              <Button onClick={e => sendChat(e)} type="submit" className="sndBtn" >Send</Button>
+            </Form>
+            </>
+          :
+            <></>
+        }
+
+        {/* Inbox / All the conversations of the user */}
         <Card.Body className='overflow-auto' id="chatRoom">
           {conversation.map((c) => (
             <div onClick={() => setCurrentChat(c)} >
@@ -200,3 +198,5 @@ export default function Chat() {
 // Use a welcome page in the chat box
 // Change the logo of the app
 // Try the register form
+// The user can switch friends to send message
+// The user can also send message to a friend that is not from the inbox

@@ -46,7 +46,7 @@
     }
 
     .messageBox.ownMsg .text {
-        background-color: rgb(228, 225, 225);
+        background-color: #A7E2E3;
     }
 
     .message {        
@@ -54,8 +54,8 @@
         background-color: whitesmoke;
     }
 
-    .text {
-        background-color: #A7E2E3;
+    .text {        
+        background-color: rgb(228, 225, 225);
         padding: 10px;
         font-size: 14px;
         font-family: 'Lexend', sans-serif;
