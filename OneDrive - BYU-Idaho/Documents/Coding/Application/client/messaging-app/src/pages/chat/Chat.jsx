@@ -4,8 +4,8 @@ import Contacts from '../../components/contacts/Contacts';
 import Chatbox from '../../components/chat/Chatbox';
 import Chatroom from '../../components/chat/Chatroom'
 import ChatBanner from "../../components/chat/Chatbanner";
+import ReactScrollableFeed from 'react-scrollable-feed';
 import {io} from "socket.io-client"
-import { renderMatches } from "react-router-dom";
 
 export default function Chat() {
 
@@ -15,7 +15,7 @@ export default function Chat() {
   const [chat, setChat] = useState([]);
   const [message, setMessage] = useState('');
   const [userId, setUserId] = useState('');
-  const autoScroll = useRef();
+  const socket = useRef(io("ws://localhost:4000"));
   let convoId = currentChat?._id;
   let token = localStorage.accessToken;
   
@@ -24,6 +24,10 @@ export default function Chat() {
     profile();
     redirect();
   },[])
+
+  useEffect(() => {
+    socket.current.emit("addUser", userId)
+  },[userId])
 
   // The user will be sent back to login page if he tries to access chat page without loging in. 
   const redirect = () => {
@@ -135,20 +139,25 @@ export default function Chat() {
         </Card.Body>         
 
         {/* Chat Section */}
+        
         <Card.Body className='overflow-auto' id="chatbox">
+        
           {            
             currentChat?
-              <div id="chatview-container">
+              <ReactScrollableFeed>               
                 {chat.map((convo) =>(                       
                     <Chatbox chat={convo} ownMsg={convo.sender === userId} />                   
                 ))}
-              </div>                        
+                
+              </ReactScrollableFeed>                       
             :
-              <>
+              
               <span className="noConvo">Start a conversation</span>
-              </>
+              
           }       
+          
         </Card.Body> 
+        
 
         {/* Text area and Button */}
         {
@@ -186,6 +195,8 @@ export default function Chat() {
 }
 
 // Create profile page
+// Create an update function
+// Create a delete function
 // Function for duplicate email
 // Logout funtion
 // Update name
@@ -200,3 +211,4 @@ export default function Chat() {
 // Try the register form
 // The user can switch friends to send message
 // The user can also send message to a friend that is not from the inbox
+// Uninstall axios
