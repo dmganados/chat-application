@@ -7,6 +7,7 @@
     const messageRoutes = require('./routes/messages');
     const conversationRoutes = require('./routes/conversations');
     const socket = require("socket.io");
+const { emit } = require('./model/User');
 
 // Environment Variable Setup
     dotenv.config();
@@ -40,6 +41,7 @@
         res.set('Access-Control-Allow-Origin', 'http://localhost:4000/');
         res.send({"msg": "CORS is enabled"})
     })
+
     const io = socket(app.listen(port, () => {
         console.log(`API is now online on port ${port}`)
     }), 
@@ -51,21 +53,61 @@
     });
 
     global.onlineUsers = new Map();
+    let users = [];
+
+    const addUser = (userId, socketId) => {
+        !users.some(user => user.userId === userId) &&
+        users.push({ userId, socketId });
+    }
+
+    const removeUser =(socketId) => {
+        users = users.filter((user) => user.socketId !== socketId);
+    }
+
+    const getUser = (userId) => {
+        return users.find((user) => user.userId === userId)
+    }
 
     io.on("connection", (socket) => {
-        // console.log(`User Connected: ${socket.id}`) 
+        console.log(`User Connected: ${socket.id}`) 
+        // io.to(si).emit("Welcome", "Hi, this is a socket server!")
         global.chatSocket = socket;
-        socket.on("add-user", (userId) => {
+        // socket.on("add-user", (userId) => {
+        //     onlineUsers.set(userId, socket.id);
+        // });
+        socket.on("addUser", (userId) => {
             onlineUsers.set(userId, socket.id);
+            // addUser(userId, socket.id);
+            // io.emit("getUsers", users);
         });
 
-        socket.on("disconnect", (data) => {
-            // console.log("User diconnected", socket.id)
+        // socket.on("sendMessage", ({ senderId, receiverId, message })=>{
+        //     const user = getUser(receiverId);
+        //     io.to(user.socket.id).emit("getMessage", {
+        //         senderId,
+        //         message
+        //     })
+        // })
+
+        socket.on("sendMessage", (data) => {
             const sendUserSocket = onlineUsers.get(data.to);
-            if (sendUserSocket) {
-                socket.to(sendUserSocket).emit("msg-receive", data.msg);
+            if(sendUserSocket) {
+                socket.to(sendUserSocket).emit("message-receive", data.message)
             }
-        });
+        })
+
+        // socket.on("disconnect", (data) => {
+        //     // console.log("User diconnected", socket.id)
+        //     const sendUserSocket = onlineUsers.get(data.to);
+        //     if (sendUserSocket) {
+        //         socket.to(sendUserSocket).emit("msg-receive", data.msg);
+        //     }
+        // });
+        // socket.on("disconnect", () => {
+        //     console.log("User disconnected", socket.id)
+        //     removeUser(socket.id);
+        //     io.emit("getUsers", users);
+        // })
     });
 
     

@@ -14,8 +14,9 @@ export default function Chat() {
   const [currentChat, setCurrentChat] = useState(null);
   const [chat, setChat] = useState([]);
   const [message, setMessage] = useState('');
+  const [incomingMessage, setIncomingMessage] = useState(null);
   const [userId, setUserId] = useState('');
-  const socket = useRef(io("ws://localhost:4000"));
+  const socket = useRef();
   let convoId = currentChat?._id;
   let token = localStorage.accessToken;
   
@@ -26,8 +27,28 @@ export default function Chat() {
   },[])
 
   useEffect(() => {
-    socket.current.emit("addUser", userId)
+    socket.current = io("ws://localhost:4000")
+    socket.current.on("getMessage", data => {
+      setIncomingMessage({
+        sender: data.senderId,
+        message: data.message,
+        createdAt: Date.now()
+      })
+    })
+  },[])
+
+  useEffect(() => {
+    incomingMessage && currentChat?.members.includes(incomingMessage.sender) &&
+    setMessage((prev) => [...prev, incomingMessage])
+  },[incomingMessage, currentChat])
+
+  useEffect(() => {
+    socket.current.emit("addUser", userId);
+    socket.current.on("getUsers", users => {
+      console.log(users)
+    })
   },[userId])
+
 
   // The user will be sent back to login page if he tries to access chat page without loging in. 
   const redirect = () => {
@@ -87,9 +108,9 @@ export default function Chat() {
   },[convoId])
 
 
-  const componentDidMount = () => {
-    const container = document.getElementById('chatview-container')
-  }
+  // const componentDidMount = () => {
+  //   const container = document.getElementById('chatview-container')
+  // }
 
 
   // Create send button function
@@ -111,8 +132,22 @@ export default function Chat() {
       } else {
         return false
       }
-    })        
+    })     
+
+    const friend = currentChat?.users.find(friend => friend !== userId)
+    
+    socket.current.emit("sendMessage", {
+      senderId: userId,
+      receiverId: friend,
+      message: message
+    })
     }
+
+    useEffect(() => {
+      socket.current.on("getMessage", msg => {
+
+      })
+    },[])
 
   return(
     <>
@@ -212,3 +247,4 @@ export default function Chat() {
 // The user can switch friends to send message
 // The user can also send message to a friend that is not from the inbox
 // Uninstall axios
+// https://www.youtube.com/watch?v=otaQKODEUFs   3:50
