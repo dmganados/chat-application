@@ -3,7 +3,7 @@ import {format} from 'timeago.js'
 
 export default function Chatbox({chat, mychat,  ownMsg})  {
     const [conversation, setConversation] = useState([]);
-    // console.log(conversation)
+    // console.log(chat.message)
 
     // useEffect(() => {
     //     let com = chat.map((convo) => {
@@ -13,11 +13,12 @@ export default function Chatbox({chat, mychat,  ownMsg})  {
        
     return(
         <>
-            <main id='auto-scroll' className={ownMsg ? "messageBox ownMsg" : "messageBox"}>                               
+            <span>Conversation</span>
+            {/* <main id='auto-scroll' className={ownMsg ? "messageBox ownMsg" : "messageBox"}>                               
                 <div className="frndName">Friend</div>  
                 <div className="message"><p className="text">{chat.message}</p></div>
                 <div className="time">{format(chat.createdAt)}</div>
-            </main>   
+            </main>    */}
         </>
     )
    

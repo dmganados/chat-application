@@ -15,11 +15,12 @@ export default function Contacts({contactsProp}) {
 
     return(
         <>  
-            <Container id='cntctsDiv'>     
+            <span>Contacts</span>
+            {/* <Container id='cntctsDiv'>     
                 <Card  id="cntctCard">          
                 <span  onClick={contactId} >{contactsProp.firstName} {contactsProp.lastName}</span>
                 </Card> 
-            </Container>                   
+            </Container>                    */}
         </>
     )
 }
