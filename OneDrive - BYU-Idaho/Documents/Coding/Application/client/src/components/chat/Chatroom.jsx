@@ -3,7 +3,6 @@ import { useState, useEffect } from "react";
 
 export default function Chatroom({conversation, currentUser}) {
     const [user, setUser] = useState(null);
-    // console.log(conversation)
     let friendId = conversation.users.find((user) => user !== currentUser);
 
     useEffect(() =>{ 

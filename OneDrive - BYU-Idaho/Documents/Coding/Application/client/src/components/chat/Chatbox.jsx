@@ -1,8 +1,16 @@
-import React from 'react'
+import React, {useState, useEffect} from 'react'
 import {format} from 'timeago.js'
 
-export default function Chatbox({chat, names, user, ownMsg})  {
-    
+export default function Chatbox({chat, mychat,  ownMsg})  {
+    const [conversation, setConversation] = useState([]);
+    // console.log(conversation)
+
+    // useEffect(() => {
+    //     let com = chat.map((convo) => {
+    //         setConversation(convo)
+    //     })
+    // },[chat]);
+       
     return(
         <>
             <main id='auto-scroll' className={ownMsg ? "messageBox ownMsg" : "messageBox"}>                               

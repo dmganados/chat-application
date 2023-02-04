@@ -13,41 +13,64 @@ export default function Chat() {
   const [conversation, setConversation] = useState([]);
   const [currentChat, setCurrentChat] = useState(null);
   const [chat, setChat] = useState([]);
+  const [reatimeChat, setRealtimeChat] = useState([]);
   const [message, setMessage] = useState('');
-  const [incomingMessage, setIncomingMessage] = useState(null);
+  const [arrivalMessage, setArrivalMessage] = useState(null);
+  const [currentUser, setCurrentUser] = useState([]);
   const [userId, setUserId] = useState('');
   const socket = useRef();
+  // const [socket, setSocket] = useState(null)
   let convoId = currentChat?._id;
   let token = localStorage.accessToken;
-  
-  useEffect(() => {    
-    allUsers();
-    profile();
-    redirect();
-  },[])
+  console.log(chat)
 
   useEffect(() => {
     socket.current = io("ws://localhost:4000")
-    socket.current.on("getMessage", data => {
-      setIncomingMessage({
-        sender: data.senderId,
-        message: data.message,
-        createdAt: Date.now()
-      })
-    })
   },[])
-
+ 
   useEffect(() => {
-    incomingMessage && currentChat?.members.includes(incomingMessage.sender) &&
-    setMessage((prev) => [...prev, incomingMessage])
-  },[incomingMessage, currentChat])
-
-  useEffect(() => {
-    socket.current.emit("addUser", userId);
+    socket.current.emit("addUser", currentUser._id)
     socket.current.on("getUsers", users => {
       console.log(users)
     })
-  },[userId])
+  },[currentUser])
+
+  // console.log(socket)
+  useEffect(() => {    
+    profile();
+    allUsers();    
+    redirect();
+  },[])
+
+  // useEffect(() => {
+  //   if(currentUser) {
+  //     socket.current = io('http://localhost:4000');
+  //     socket.current.emit("addUser", currentUser._id)
+  //   }    
+  // },[currentUser]);
+
+  // useEffect(() => {
+  //   socket.current = io("ws://localhost:4000")
+  //   socket.current.on("getMessage", data => {
+  //     setIncomingMessage({
+  //       sender: data.senderId,
+  //       message: data.message,
+  //       createdAt: Date.now()
+  //     })
+  //   })
+  // },[])
+
+  // useEffect(() => {
+  //   incomingMessage && currentChat?.members.includes(incomingMessage.sender) &&
+  //   setMessage((prev) => [...prev, incomingMessage])
+  // },[incomingMessage, currentChat])
+
+  // useEffect(() => {
+  //   socket.current.emit("addUser", userId);
+  //   socket.current.on("getUsers", users => {
+  //     console.log(users)
+  //   })
+  // },[userId])
 
 
   // The user will be sent back to login page if he tries to access chat page without loging in. 
@@ -65,11 +88,12 @@ export default function Chat() {
         Authorization: `Bearer ${token}`
       }
     }).then(res => res.json()).then(data => {  
-               
+      setCurrentUser(data)
       // Once you get the profile get the id to use as a reference of all its conversations
       let id = data._id;
       setUserId(id)
       fetch(`http://localhost:4000/conversations/connect/${id}`).then(res => res.json()).then(connect => {
+        console.log(connect)
         setConversation(connect)
       })
     })
@@ -92,12 +116,58 @@ export default function Chat() {
       console.log(error)
     }
   }
-   
-  // Create a section for all chat interactions of the user
+
+  
+  // Create send button function
+  // After the user enters/submit his/her message, a new message will be created.
+  const sendChat = async (event) => { 
+    event.preventDefault()  
+    const chatSent = await fetch(`http://localhost:4000/message/messages/${currentUser._id}`,{
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        conversationId: convoId,
+        message: message
+      })
+    }).then(res => res.json()).then(sent => {      
+      if (sent) {
+        setMessage('')
+      } else {
+        return false
+      }
+    })  
+
+    let friendId = conversation.users.find((user) => user !== currentUser._id);
+    
+    socket.current.emit("sendMessage", {
+      senderId: currentUser._id,
+      receiverId: friendId,
+      message
+    })    
+    }
+
+    useEffect(() => {
+      socket.current.on("getMessage", data => {
+        setArrivalMessage({
+          sender: data.senderId,
+          message: data.message,
+          createdAt: Date.now()
+        })
+      })
+    })
+
+    useEffect(() => {
+      arrivalMessage && conversation?.users.includes(arrivalMessage.sender) && setChat((prev) => [...prev, arrivalMessage])
+    },[arrivalMessage, conversation]);
+
+  //  Create a section for all chat interactions of the user
   useEffect(() => {
     const getMessage = async () => {    
       try {
         await fetch(`http://localhost:4000/message/messages/${convoId}`).then(res => res.json()).then(data => {
+          // console.log(data)
         setChat(data)
       })
       } catch (error) {
@@ -108,46 +178,28 @@ export default function Chat() {
   },[convoId])
 
 
-  // const componentDidMount = () => {
-  //   const container = document.getElementById('chatview-container')
-  // }
+    // useEffect(() => {      
+    //   let ownMessage = chat.map((convo) => {
+    //     if(convo.sender === userId) {
+    //       return true
+    //     }
+    //     // console.log(convo)
+    //   })
 
+    //   if(socket.current) {
+    //     socket.current.on("message-receive", (message) => {
+    //       console.log(message)
+    //       setArrivalMessage({ ownMessage: false, message: message })
+    //       // check later
+    //     }) 
+    //   }
+    // },[])
 
-  // Create send button function
-  // After the user enters/submit his/her message, a new message will be created.
-  const sendChat = async (event) => {   
-    event.preventDefault()  
-    const chatSent = await fetch(`http://localhost:4000/message/messages/${userId}`,{
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        conversationId: convoId,
-        message: message
-      })
-    }).then(res => res.json()).then(sent => {
-      if (sent) {
-        setMessage('')
-      } else {
-        return false
-      }
-    })     
+    // useEffect(() => {
+    //   arrivalMessage && setMessage((prev) => [...prev, arrivalMessage]);
+    // },[arrivalMessage])
 
-    const friend = currentChat?.users.find(friend => friend !== userId)
     
-    socket.current.emit("sendMessage", {
-      senderId: userId,
-      receiverId: friend,
-      message: message
-    })
-    }
-
-    useEffect(() => {
-      socket.current.on("getMessage", msg => {
-
-      })
-    },[])
 
   return(
     <>
@@ -160,7 +212,7 @@ export default function Chat() {
           currentChat?          
             <>
               <Card.Body className="bannerBody">
-                <ChatBanner activeChat={currentChat?.users} myId={userId} />
+                <ChatBanner activeChat={currentChat?.users} myId={currentUser._id} />
               </Card.Body>
             </>
           :
@@ -181,8 +233,8 @@ export default function Chat() {
             currentChat?
               <ReactScrollableFeed>               
                 {chat.map((convo) =>(                       
-                    <Chatbox chat={convo} ownMsg={convo.sender === userId} />                   
-                ))}
+                    <Chatbox chat={convo} ownMsg={convo.sender === currentUser._id} socket={socket} />                   
+                ))}               
                 
               </ReactScrollableFeed>                       
             :
@@ -219,7 +271,7 @@ export default function Chat() {
         <Card.Body className='overflow-auto' id="chatRoom">
           {conversation.map((c) => (
             <div onClick={() => setCurrentChat(c)} >
-            <Chatroom conversation={c} currentUser={userId} />
+            <Chatroom conversation={c} currentUser={currentUser._id} />
             </div>
           ))}
         </Card.Body>        
@@ -248,3 +300,4 @@ export default function Chat() {
 // The user can also send message to a friend that is not from the inbox
 // Uninstall axios
 // https://www.youtube.com/watch?v=otaQKODEUFs   3:50
+// https://www.youtube.com/watch?v=NU-HfZY3ATQ
