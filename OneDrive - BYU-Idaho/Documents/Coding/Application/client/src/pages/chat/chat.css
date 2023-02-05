@@ -61,7 +61,8 @@
     .menu {
         position: relative;
         display: flex;
-        /* top: 5%; */
+        
+        top: 1%;
         background-color: #4C6663 !important;  
     }
 
@@ -82,8 +83,16 @@
 
     .tabContent {
         position: relative;
-        /* top: 5%; */
+        top: 2%;
         background-color: whitesmoke;
         height: 80%;
+    }
+
+    .chatbox {
+        grid-column: 2/5;
+        /* padding: 0% 5% 0% 5%; */
+        height: 75vh !important;
+        background-color: #C9D7F8 !important;
+        /* width: 50vw; */
     }
 }

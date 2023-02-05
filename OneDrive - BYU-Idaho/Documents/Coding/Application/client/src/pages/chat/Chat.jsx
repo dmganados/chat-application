@@ -24,7 +24,7 @@ export default function Chat() {
   let convoId = currentChat?._id;
   let token = localStorage.accessToken;
   let userName = `${currentUser.firstName} ${currentUser.lastName}`
-  // console.log(prof)
+  console.log(chat)
   // let map =  newMessage?.map((n) => [
   //   console.log(n)
   // ])
@@ -212,17 +212,21 @@ export default function Chat() {
       </Card>
       {/* Create section for the chatbox. 
       In this section, the user can see the name of his friend, can write message, and send (optional: can edit and delete message) */}
-      <Container>
-
-        <Card>
-          <>
-          {/* {chat.map((convo) =>(                       
-              <Chatbox chat={convo} ownMsg={convo.sender === currentUser._id} socket={socket} />                   
-          ))}  */}
-          </>
-        
+      
+        <Card className="overflow-auto  chatbox">
+          {            
+            currentChat?
+              <ReactScrollableFeed>               
+                {chat.map((convo) =>(                       
+                    <Chatbox chat={convo} ownMsg={convo.sender === currentUser._id} socket={socket} />                   
+                ))}               
+                
+              </ReactScrollableFeed>                       
+            :              
+              <span className="noConvo">Start a conversation</span>              
+          }     
         </Card>
-      </Container>
+      
     </div>
     // <>
     // <Container className="chatContainer">

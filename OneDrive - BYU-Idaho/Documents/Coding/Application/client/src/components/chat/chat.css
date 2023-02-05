@@ -5,16 +5,6 @@
         margin-top: 80%;        
     }
 
-    /* .sndBtn, .sndBtnBorder {
-        background-color: #4C6663 !important;
-    }
-
-    .sndBtnBorder {
-        width: 65px;
-        margin-left: 2%;
-        margin-top: -10%;
-    } */
-
     .chatForm {
         width: 100%;
     }
@@ -34,11 +24,16 @@
         width: 25%;  
         background-color: whitesmoke;      
     }
+
+    main {
+        margin: 0% 2% 0% 3%;
+    }
+
     .messageBox.ownMsg {
         display: flex;
         flex-direction: column;
         margin-top: 2%;
-        background-color: whitesmoke;
+        background-color: #C9D7F8;
     }
 
     .messageBox.ownMsg {
@@ -51,7 +46,7 @@
 
     .message {        
         display: flex;
-        background-color: whitesmoke;
+        background-color: #c9d7f8;
     }
 
     .text {        
@@ -72,7 +67,7 @@
    
     .time {
         font-size: 12px;
-        background-color: whitesmoke;
+        background-color: #c9d7f8;
         margin-top: -12px;
     }
 
