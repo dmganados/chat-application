@@ -16,9 +16,10 @@ export default function Chatroom({conversation, currentUser}) {
 
     return(
         <>               
-        <Card id='chtRmDiv'>  
+        {/* <span>Chatroom</span> */}
+        <Card id="chtRmDiv">  
             <Card.Body id="chtRmCard">
-            <span className="userName">{user?.firstName} {user?.lastName}</span>
+            {user?.firstName} {user?.lastName}
             </Card.Body>      
         </Card>             
         </>

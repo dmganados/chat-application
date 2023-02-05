@@ -1,17 +1,13 @@
 @media only screen and (min-width: 992px) {
 
     #cntctsDiv {
-        width: auto;
-        margin-top: 5%;
-        margin-left: 0px;
         font-family: 'Lexend', sans-serif;
-        font-size: 20px; 
+        border: none;
     }   
 
     #cntctCard {
-        position: relative;
-        z-index: 1;
         cursor: pointer;
+        background-color: whitesmoke;
     }
 
     #cntctCard:hover {

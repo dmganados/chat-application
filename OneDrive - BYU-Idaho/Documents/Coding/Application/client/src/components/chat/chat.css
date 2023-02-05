@@ -77,36 +77,32 @@
     }
 
     #chtRmDiv {
-        width: 300px;
-        height: 40px;
-        margin-top: 10%;
-        margin-left: 0px;
-        font-family: 'Lexend', sans-serif;
-        font-size: 20px; 
+        border: none;
     } 
 
     #chtRmCard {
-        position: relative;
-        z-index: 1;
+        font-family: 'Lexend', sans-serif;
+        background-color: whitesmoke;
         cursor: pointer;
-        height: 50%;
     }
 
     #chtRmCard:hover {
         background-color: rgb(226, 223, 223);
     }
 
-    .userName {
-        display: flex;
-        margin-top: -6px;
-    }
-
     .banner {
+        /* margin-top: 2%; */
+        /* margin-left: 5%; */
         background-color: whitesmoke;
         font-family: 'Lexend', sans-serif;
-        font-size: 25px;
-        width: 84%;
+        font-size: 22px;
+        padding: 1%;
+        /* width: 100vw; */
+    }
 
+    .fullName {
+        margin-left: 2%;
+        background-color: whitesmoke;
     }
 
 

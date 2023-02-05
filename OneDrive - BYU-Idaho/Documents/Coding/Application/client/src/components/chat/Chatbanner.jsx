@@ -16,7 +16,7 @@ export default function ChatBanner({activeChat, myId}) {
 
     return(
         <>
-            <div className="banner">{currentChat?.firstName} {currentChat?.lastName}</div>
+            <div className="banner"><span className="fullName">{currentChat?.firstName} {currentChat?.lastName}</span></div>
         </>
     )
 }

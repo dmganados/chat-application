@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useRef} from "react";
-import { Form, Button, Container, Card, Row, Col, Tab, Nav } from 'react-bootstrap';
+import { Form, Button, Container, Card, Row, Col, Tab, Tabs, Nav, Navbar, NavDropdown } from 'react-bootstrap';
 import Contacts from '../../components/contacts/Contacts';
 import Chatbox from '../../components/chat/Chatbox';
+import Notification from '../../components/notification/Notification'
 import Chatroom from '../../components/chat/Chatroom'
 import ChatBanner from "../../components/chat/Chatbanner";
 import ReactScrollableFeed from 'react-scrollable-feed';
@@ -22,7 +23,8 @@ export default function Chat() {
   const socket = useRef();
   let convoId = currentChat?._id;
   let token = localStorage.accessToken;
-  // console.log(newMessage)
+  let userName = `${currentUser.firstName} ${currentUser.lastName}`
+  // console.log(prof)
   // let map =  newMessage?.map((n) => [
   //   console.log(n)
   // ])
@@ -104,7 +106,6 @@ export default function Chat() {
         message: message
       })
     }).then(res => res.json()).then(sent => {      
-      // console.log(sent)
       if (sent) {
         fetch(`http://localhost:4000/message/messages/${convoId}`).then(res => res.json()).then(data => {
           setNewMessage(data)
@@ -134,9 +135,9 @@ export default function Chat() {
       })
     })
 
-    useEffect(() => {
-      arrivalMessage && conversation?.users.includes(arrivalMessage.sender) && setChat((prev) => [...prev, arrivalMessage])
-    },[arrivalMessage, conversation]);
+    // useEffect(() => {
+    //   arrivalMessage && conversation?.users.includes(arrivalMessage.sender) && setChat((prev) => [...prev, arrivalMessage])
+    // },[arrivalMessage, conversation]);
 
   //  Create a section for all chat interactions of the user
   useEffect(() => {
@@ -154,32 +155,75 @@ export default function Chat() {
     
 
   return(
-    <>      
+    <div className="main">  
+        <Navbar className="topCard">
+          <Navbar.Collapse className="navItems">
+          <NavDropdown title={userName} className="navigation">
+            {/* Change hover color */}
+            <NavDropdown.Item>Profile</NavDropdown.Item>
+            <NavDropdown.Item>Logout</NavDropdown.Item>
+          </NavDropdown >
+          </Navbar.Collapse>
+          
+        </Navbar>
+        <div className="bannerContainer">
+          {
+            // If there is no friend selected, the name will not be diplayed in the banner.
+            currentChat?          
+              <>
+                <Card.Body className="bannerBody">
+                  <ChatBanner activeChat={currentChat?.users} myId={currentUser._id} />
+                </Card.Body>
+              </>
+            :
+              <></>
+          }
+        </div>
+       
       <Card className="leftSection">
-        <span className="userName">Current User</span>
         <Tab.Container defaultActiveKey="first">          
               <Nav className="menu">
                 <Nav.Item id="chat" >
                   <Nav.Link eventKey="first" className="chatLink" >Chat</Nav.Link>
                 </Nav.Item>
-                <Nav.Item id="contacts" >
+                <Nav.Item  id="contacts" >
                   <Nav.Link eventKey="second" className="chatLink" >Contacts</Nav.Link>
                 </Nav.Item>
-                <Nav.Item id="people" >
-                  <Nav.Link eventKey="third" className="chatLink" >People</Nav.Link>
+                <Nav.Item id="notification" >
+                  <Nav.Link eventKey="third" className="chatLink" >Notification</Nav.Link>
                 </Nav.Item>
               </Nav>
-              <Tab.Content className="tabContent">
+              <Tab.Content className="overflow-auto tabContent">
                 <Tab.Pane eventKey="first">
-                  <Chatbox />
+                {conversation.map((c) => (    
+                  <div onClick={() => setCurrentChat(c)} >              
+                  <Chatroom conversation={c} currentUser={currentUser._id} />   
+                  </div>               
+                ))}
                 </Tab.Pane>
                 <Tab.Pane eventKey="second">
-                  <Contacts />
+                  {contactsCollection}                
+                </Tab.Pane>
+                <Tab.Pane eventKey="third">
+                  <Notification />
                 </Tab.Pane>
               </Tab.Content>                       
         </Tab.Container>
       </Card>
-    </>
+      {/* Create section for the chatbox. 
+      In this section, the user can see the name of his friend, can write message, and send (optional: can edit and delete message) */}
+      <Container>
+
+        <Card>
+          <>
+          {/* {chat.map((convo) =>(                       
+              <Chatbox chat={convo} ownMsg={convo.sender === currentUser._id} socket={socket} />                   
+          ))}  */}
+          </>
+        
+        </Card>
+      </Container>
+    </div>
     // <>
     // <Container className="chatContainer">
     //   <Card id="chatCard">

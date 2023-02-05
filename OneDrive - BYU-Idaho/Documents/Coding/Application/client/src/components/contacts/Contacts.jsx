@@ -3,8 +3,9 @@ import {useState, useEffect} from 'react'
 import { useParams } from 'react-router-dom'
 
 export default function Contacts({contactsProp}) {
-    const [id, setId] = useState([]) 
     // console.log(contactsProp)
+    const [id, setId] = useState([]) 
+    // console.log(id)
 
     let contactId = (submitEvent) => {
         submitEvent.preventDefault()
@@ -12,15 +13,15 @@ export default function Contacts({contactsProp}) {
           setId(id)
         })    
       }
+    
 
     return(
         <>  
-            <span>Contacts</span>
-            {/* <Container id='cntctsDiv'>     
-                <Card  id="cntctCard">          
-                <span  onClick={contactId} >{contactsProp.firstName} {contactsProp.lastName}</span>
-                </Card> 
-            </Container>                    */}
+            <Card id='cntctsDiv'>     
+                <Card.Body id="cntctCard" onClick={contactId}>          
+                    {contactsProp.firstName} {contactsProp.lastName}
+                </Card.Body> 
+            </Card>                   
         </>
     )
 }
