@@ -13,9 +13,8 @@ export default function Chatbox({chat, mychat,  ownMsg})  {
        
     return(
         <>
-            {/* <span>Conversation</span> */}
             <main id='auto-scroll' className={ownMsg ? "messageBox ownMsg" : "messageBox"}>                               
-                <div>Friend</div>  
+                <div className='frndName'>Friend</div>  
                 <div className="message"><p className="text">{chat.message}</p></div>
                 <div className="time">{format(chat.createdAt)}</div>
             </main>   

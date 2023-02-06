@@ -5,6 +5,7 @@ import Chatbox from '../../components/chat/Chatbox';
 import Notification from '../../components/notification/Notification'
 import Chatroom from '../../components/chat/Chatroom'
 import ChatBanner from "../../components/chat/Chatbanner";
+import Conversations from "../../components/chat/Conversations";
 import ReactScrollableFeed from 'react-scrollable-feed';
 import {io} from "socket.io-client"
 
@@ -20,25 +21,24 @@ export default function Chat() {
   const [arrivalMessage, setArrivalMessage] = useState(null);
   const [currentUser, setCurrentUser] = useState([]);
   const [userId, setUserId] = useState('');
-  const socket = useRef();
+  const [socket, setSocket] = useState(null);
+  // const socket = useRef(io("http://localhost:4000"));
   let convoId = currentChat?._id;
   let token = localStorage.accessToken;
-  let userName = `${currentUser.firstName} ${currentUser.lastName}`
-  console.log(chat)
-  // let map =  newMessage?.map((n) => [
-  //   console.log(n)
-  // ])
+  let userName = `${currentUser.firstName} ${currentUser.lastName}`;
+  let receiver = currentChat?.users.find(mate => mate !== currentUser._id)
 
   useEffect(() => {
-    socket.current = io("ws://localhost:4000")
+    setSocket(io("http://localhost:4000")) 
   },[])
- 
-  useEffect(() => {
-    socket.current.emit("addUser", currentUser._id)
-    socket.current.on("getUsers", users => {
-      console.log(users)
+
+  useEffect(() => {   
+    socket?.current.emit("addUser", currentUser._id); 
+    socket?.current.on("getUsers", users => {
+      console.log(users);
     })
-  },[currentUser])
+  },[]);
+
 
   useEffect(() => {    
     profile();
@@ -94,7 +94,6 @@ export default function Chat() {
   // Create send button function
   // After the user enters/submit his/her message, a new message will be created.
   const sendChat = async (event) => { 
-    // console.log(event)
     event.preventDefault()  
     const chatSent = await fetch(`http://localhost:4000/message/messages/${currentUser._id}`,{
       method: 'POST',
@@ -114,26 +113,8 @@ export default function Chat() {
       } else {
         return false
       }
-    })  
-
-    // let friendId = conversation.users.find((user) => user !== currentUser._id);
-    
-    // socket.current.emit("sendMessage", {
-    //   senderId: currentUser._id,
-    //   receiverId: friendId,
-    //   message
-    // })    
+    })     
     }
-
-    useEffect(() => {
-      socket.current.on("getMessage", data => {
-        setArrivalMessage({
-          sender: data.senderId,
-          message: data.message,
-          createdAt: Date.now()
-        })
-      })
-    })
 
     // useEffect(() => {
     //   arrivalMessage && conversation?.users.includes(arrivalMessage.sender) && setChat((prev) => [...prev, arrivalMessage])
@@ -214,9 +195,9 @@ export default function Chat() {
       In this section, the user can see the name of his friend, can write message, and send (optional: can edit and delete message) */}
       
         <Card className="overflow-auto  chatbox">
-          {            
+          {/* {            
             currentChat?
-              <ReactScrollableFeed>               
+              <ReactScrollableFeed className="chatDiv">               
                 {chat.map((convo) =>(                       
                     <Chatbox chat={convo} ownMsg={convo.sender === currentUser._id} socket={socket} />                   
                 ))}               
@@ -224,7 +205,9 @@ export default function Chat() {
               </ReactScrollableFeed>                       
             :              
               <span className="noConvo">Start a conversation</span>              
-          }     
+          }      */}
+          <Conversations convoId={convoId} user={currentUser} socket={socket} friend={receiver} />
+          
         </Card>
       
     </div>

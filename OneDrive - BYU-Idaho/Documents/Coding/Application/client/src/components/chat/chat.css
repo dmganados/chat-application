@@ -27,13 +27,14 @@
 
     main {
         margin: 0% 2% 0% 3%;
+        /* background-color: #4C6663 !important; */
     }
 
     .messageBox.ownMsg {
         display: flex;
         flex-direction: column;
         margin-top: 2%;
-        background-color: #C9D7F8;
+        background-color: #4C6663;
     }
 
     .messageBox.ownMsg {
@@ -46,7 +47,7 @@
 
     .message {        
         display: flex;
-        background-color: #c9d7f8;
+        background-color: #4C6663;
     }
 
     .text {        
@@ -62,12 +63,13 @@
         font-size: 13px;
         font-weight: bold;
         font-family: 'Lexend', sans-serif;
-        background-color: whitesmoke;
+        background-color: #4C6663;
+        color: #80CFA9;
     }
    
     .time {
         font-size: 12px;
-        background-color: #c9d7f8;
+        background-color: #4C6663;
         margin-top: -12px;
     }
 
@@ -99,8 +101,4 @@
         margin-left: 2%;
         background-color: whitesmoke;
     }
-
-
-
-
 }

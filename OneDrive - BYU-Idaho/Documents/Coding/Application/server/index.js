@@ -7,7 +7,7 @@
     const messageRoutes = require('./routes/messages');
     const conversationRoutes = require('./routes/conversations');
     const socket = require("socket.io");
-const { emit } = require('./model/User');
+// const { emit } = require('./model/User');
 
 // Environment Variable Setup
     dotenv.config();
@@ -49,8 +49,55 @@ const { emit } = require('./model/User');
     const io = socket(server, {
         cors: {
             origin: "http://localhost:3000",
+            crendentials: true
         }
     })
+
+    let users = [];
+
+    const pushUser = (userId, socketId) => {
+        !users.some((user) => user.userId === userId) && users.push({ userId, socketId });
+    }
+
+    const removeUser = (socketId) => {
+        users = users.filter((user) => user.socketId !== socketId)
+    } 
+
+    const receiver = (userId) => {
+        return users.find((user) => user.userId === userId);
+    }
+
+    io.on("connection", (socket) => {
+        console.log("A user is connected:", socket.id)
+        
+        socket.on("addUser", userId => {
+            pushUser(userId, socket.id);
+            io.emit("getUsers", users)
+        })
+
+        socket.on("sendMessage", ({senderId, receiverId, message}) => {
+            const friend = receiver(receiverId)
+            io.to(friend.socketId).emit("getMessage", {
+                senderId,
+                message
+            })
+        })
+
+        socket.on("disconnect", ()=> {
+            console.log("A user diconnected:", socket.id);
+            removeUser(socket.id);
+            io.emit("getUsers", users)
+        })
+    })
+
+    // global.onlineUser = new Map();
+
+    // io.on("connection", (socket) => {
+    //     global.chatSocket = socket;
+    //     socket.on("addUser", (userId) => {
+            
+    //     })
+    // })
 
     // let users = [];
 
