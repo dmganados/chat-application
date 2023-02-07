@@ -27,7 +27,10 @@
 
     main {
         margin: 0% 2% 0% 3%;
-        /* background-color: #4C6663 !important; */
+    }
+
+    .messageBox {
+        margin-top: 2%;
     }
 
     .messageBox.ownMsg {
@@ -66,12 +69,6 @@
         background-color: #4C6663;
         color: #80CFA9;
     }
-   
-    .time {
-        font-size: 12px;
-        background-color: #4C6663;
-        margin-top: -12px;
-    }
 
     #chtRmDiv {
         border: none;
@@ -88,17 +85,41 @@
     }
 
     .banner {
-        /* margin-top: 2%; */
-        /* margin-left: 5%; */
         background-color: whitesmoke;
         font-family: 'Lexend', sans-serif;
         font-size: 22px;
         padding: 1%;
-        /* width: 100vw; */
     }
 
     .fullName {
         margin-left: 2%;
         background-color: whitesmoke;
+    }
+
+    .functions {
+        width: 13%;
+        height: 5%;
+        background-color: #4C6663;
+        margin-top: -1%;
+        display: block;
+        
+
+    }
+
+    #edit, #delete {
+        background-color: #4C6663;
+        margin-left: 10px !important;
+        font-size: 12px;
+        display: block;
+        float: right;
+        cursor: pointer;
+    }
+
+    /* #edit:hov, #delete */
+
+    .time {
+        font-size: 12px;
+        background-color: #4C6663;
+        /* margin-top: -16px; */
     }
 }

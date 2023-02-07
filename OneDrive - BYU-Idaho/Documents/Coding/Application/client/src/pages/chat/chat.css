@@ -93,10 +93,32 @@
         grid-column: 2/5;
         height: 75vh !important;
         background-color: #4C6663 !important;
-
+        /* display: block; */
     }
 
     .chatDiv {
         background-color: #4C6663;
+    }
+
+    .buttonCard {
+        grid-column: 2/5;
+        left: 10%;
+        margin-top: 2%;
+        /* top: 5%; */
+    }
+
+    .txtareaForm {
+        position: relative;
+        display: flex;
+    }
+
+    .textGrp {
+        width: 65%;
+        top: 25%;
+    }
+
+    .sndBtn {
+        margin-left: 3%;
+        background-color: #4C6663 !important;
     }
 }

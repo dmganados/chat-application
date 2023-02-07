@@ -3,11 +3,10 @@ const exp = require('express');
 const controller = require('../controller/messages');
 const auth = require('../auth');
 
-
-
 // Routing Component
 const route = exp.Router();
 
+// Create Message
 route.post('/messages/:senderId', (req, res) => {
     let convoId = req.body.conversationId;
     let msgs = req.body.message;
@@ -22,14 +21,38 @@ route.post('/messages/:senderId', (req, res) => {
     })
 });
 
-
-
+// Retrieve Message
 route.get('/messages/:conversationId', (req, res) => {
-    let convoId = req.params.conversationId
+    let convoId = req.params.conversationId;
     controller.getMessage(convoId).then(result => {
-        res.send(result)
+        res.send(result);
     })
 });
+
+// Update Message
+route.put('/messages/update/:msgId', (req, res) => {
+    let id = req.params.msgId;
+    let convoId = req.body.conversationId;
+    let sndr = req.body.sender
+    let msg = req.body.message;
+    let data = {
+        conversationId: convoId,
+        sender: sndr,
+        message: msg,
+    }
+    controller.editMessage(id, data).then(result => {
+        res.send(result)
+    })
+})
+
+
+// Delete Message
+route.delete('/messages/delete/:msgId', (req, res) => {
+    let msgId = req.params.msgId;
+    controller.deleteMessage(msgId).then(result => {
+        res.send(result)
+    })
+})
 
 // Expose Route System
 module.exports = route;

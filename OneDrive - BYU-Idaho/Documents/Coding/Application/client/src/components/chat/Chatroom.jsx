@@ -3,11 +3,11 @@ import { useState, useEffect } from "react";
 
 export default function Chatroom({conversation, currentUser}) {
     const [user, setUser] = useState(null);
-    let friendId = conversation.users.find((user) => user !== currentUser);
+    let friendId = conversation.users.find((user) => user !== currentUser)
 
     useEffect(() =>{ 
         let getUser = async () => {
-            fetch(`http://localhost:4000/user/profile/${friendId}`).then(res => res.json()).then(friend => {
+            await fetch(`http://localhost:4000/user/profile/${friendId}`).then(res => res.json()).then(friend => {
                 setUser(friend)
             });
         };       

@@ -1,11 +1,10 @@
 import React, { useState, useEffect, useRef} from "react";
-import { Form, Button, Container, Card, Row, Col, Tab, Tabs, Nav, Navbar, NavDropdown } from 'react-bootstrap';
+import { Form, Button, Card, Tab, Nav, Navbar, NavDropdown } from 'react-bootstrap';
 import Contacts from '../../components/contacts/Contacts';
 import Chatbox from '../../components/chat/Chatbox';
 import Notification from '../../components/notification/Notification'
 import Chatroom from '../../components/chat/Chatroom'
 import ChatBanner from "../../components/chat/Chatbanner";
-import Conversations from "../../components/chat/Conversations";
 import ReactScrollableFeed from 'react-scrollable-feed';
 import {io} from "socket.io-client"
 
@@ -16,29 +15,19 @@ export default function Chat() {
   const [conversation, setConversation] = useState([]);
   const [currentChat, setCurrentChat] = useState(null);
   const [chat, setChat] = useState([]);
-  const [newMessage, setNewMessage] = useState(null);
   const [message, setMessage] = useState('');
   const [arrivalMessage, setArrivalMessage] = useState(null);
   const [currentUser, setCurrentUser] = useState([]);
-  const [userId, setUserId] = useState('');
-  const [socket, setSocket] = useState(null);
-  // const socket = useRef(io("http://localhost:4000"));
+  const socket = useRef();
   let convoId = currentChat?._id;
   let token = localStorage.accessToken;
   let userName = `${currentUser.firstName} ${currentUser.lastName}`;
-  let receiver = currentChat?.users.find(mate => mate !== currentUser._id)
+  let receiver = currentChat?.users.find(mate => mate !== currentUser._id);
 
   useEffect(() => {
-    setSocket(io("http://localhost:4000")) 
-  },[])
-
-  useEffect(() => {   
-    socket?.current.emit("addUser", currentUser._id); 
-    socket?.current.on("getUsers", users => {
-      console.log(users);
-    })
-  },[]);
-
+      socket.current = io("http://localhost:4000");
+      socket.current.emit("addUser", currentUser._id); 
+  },[currentUser])
 
   useEffect(() => {    
     profile();
@@ -65,7 +54,6 @@ export default function Chat() {
       setCurrentUser(data)
       // Once you get the profile get the id to use as a reference of all its conversations
       let id = data._id;
-      setUserId(id)
       fetch(`http://localhost:4000/conversations/connect/${id}`).then(res => res.json()).then(connect => {
         setConversation(connect)
       })
@@ -80,8 +68,9 @@ export default function Chat() {
     try {
       await fetch('http://localhost:4000/user/all-users').then(res => res.json()).then(contactsData => {
       setContactsCollection(contactsData.map(contactList => {   
+        let user = currentUser._id
         return(
-          <Contacts key={contactList._id} contactsProp={contactList} />
+          <Contacts key={contactList._id} contactsProp={contactList} currentUser={user} />                  
         )
       }));
     });
@@ -89,36 +78,6 @@ export default function Chat() {
       console.log(error)
     }
   }
-
-  
-  // Create send button function
-  // After the user enters/submit his/her message, a new message will be created.
-  const sendChat = async (event) => { 
-    event.preventDefault()  
-    const chatSent = await fetch(`http://localhost:4000/message/messages/${currentUser._id}`,{
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        conversationId: convoId,
-        message: message
-      })
-    }).then(res => res.json()).then(sent => {      
-      if (sent) {
-        fetch(`http://localhost:4000/message/messages/${convoId}`).then(res => res.json()).then(data => {
-          setNewMessage(data)
-        })        
-        setMessage('')
-      } else {
-        return false
-      }
-    })     
-    }
-
-    // useEffect(() => {
-    //   arrivalMessage && conversation?.users.includes(arrivalMessage.sender) && setChat((prev) => [...prev, arrivalMessage])
-    // },[arrivalMessage, conversation]);
 
   //  Create a section for all chat interactions of the user
   useEffect(() => {
@@ -133,6 +92,55 @@ export default function Chat() {
     } 
     getMessage()
   },[convoId])
+
+  // Create send button function
+  // After the user enters/submit his/her message, a new message will be created.
+  const handleSendChat = async (event) => { 
+    event.preventDefault() 
+    if(currentChat){
+      await fetch(`http://localhost:4000/message/messages/${currentUser._id}`,{
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        conversationId: convoId,
+        message: message
+      })
+    }).then(res => res.json()).then(sent => {      
+      if (sent) {    
+        setMessage('')
+      } else {
+        return false
+      }
+    })
+    }    
+    socket.current.emit("sendMessage", {
+      conversationId: convoId,
+      senderId: currentUser._id,
+      receiverId: receiver,
+      message: message,
+    })
+
+    const msg = [...chat];
+    msg.push({sender: currentUser._id, message: message})
+    setChat(msg)
+    }
+
+  useEffect(() => {
+      socket.current.on("messageReceive", data => {
+        setArrivalMessage({
+          conversationId: data.conversationId,
+          sender: data.senderId,
+          message: data.message,
+          createdAt: Date.now(),
+        })
+      })
+    },[])
+
+  useEffect(() => {
+    arrivalMessage && setMessage((prev) => [...prev, arrivalMessage]);
+  },[arrivalMessage]);
     
 
   return(
@@ -183,7 +191,7 @@ export default function Chat() {
                 ))}
                 </Tab.Pane>
                 <Tab.Pane eventKey="second">
-                  {contactsCollection}                
+                    {contactsCollection}
                 </Tab.Pane>
                 <Tab.Pane eventKey="third">
                   <Notification />
@@ -195,98 +203,43 @@ export default function Chat() {
       In this section, the user can see the name of his friend, can write message, and send (optional: can edit and delete message) */}
       
         <Card className="overflow-auto  chatbox">
-          {/* {            
+          <>
+          {          
             currentChat?
-              <ReactScrollableFeed className="chatDiv">               
+              <ReactScrollableFeed className="chatDiv">                             
                 {chat.map((convo) =>(                       
-                    <Chatbox chat={convo} ownMsg={convo.sender === currentUser._id} socket={socket} />                   
+                    <Chatbox chat={convo} ownMsg={convo.sender === currentUser._id} socket={socket} currentUser={currentUser._id} />                   
                 ))}               
                 
               </ReactScrollableFeed>                       
             :              
               <span className="noConvo">Start a conversation</span>              
-          }      */}
-          <Conversations convoId={convoId} user={currentUser} socket={socket} friend={receiver} />
-          
+          }   
+          </>
         </Card>
-      
+
+        <Card className="buttonCard">
+          {
+            currentChat?
+              <>
+              <Form className="txtareaForm">
+                <Form.Group className="textGrp">
+                  <Form.Control
+                  type="text"                
+                  placeholder="Write something..." 
+                  value={message}
+                  onChange={event => setMessage(event.target.value)}
+                  className="textarea"
+                  />
+                </Form.Group>
+                <Button onClick={e => handleSendChat(e)} type="submit" className="sndBtn" >Send</Button>
+              </Form>
+              </>
+            :
+              <></>
+          }
+          </Card>
     </div>
-    // <>
-    // <Container className="chatContainer">
-    //   <Card id="chatCard">
-    //     {/* Chat Banner Section */}
-    //     {/* Create a section where a the name of a friend you currently chatting with is diplayed. This is diplayed in the banner of the chat*/}
-    //     {
-    //       // If there is no friend selected, the name will not be diplayed in the banner.
-    //       currentChat?          
-    //         <>
-    //           <Card.Body className="bannerBody">
-    //             <ChatBanner activeChat={currentChat?.users} myId={currentUser._id} />
-    //           </Card.Body>
-    //         </>
-    //       :
-    //         <></>
-    //     }
-        
-    //     {/* Contact List Section */}
-    //     {/* Display all the people registered in the app. This is also the contact list */}
-    //     <Card.Body className='overflow-auto' id="cntctsCollection">
-    //       {contactsCollection}
-    //     </Card.Body>         
-
-    //     {/* Chat Section */}
-        
-    //     <Card.Body className='overflow-auto' id="chatbox">
-        
-    //       {            
-    //         currentChat?
-    //           <ReactScrollableFeed>               
-    //             {chat.map((convo) =>(                       
-    //                 <Chatbox chat={convo} ownMsg={convo.sender === currentUser._id} socket={socket} />                   
-    //             ))}               
-                
-    //           </ReactScrollableFeed>                       
-    //         :
-              
-    //           <span className="noConvo">Start a conversation</span>
-              
-    //       }       
-          
-    //     </Card.Body> 
-        
-
-    //     {/* Text area and Button */}
-    //     {
-    //       currentChat?
-    //         <>
-    //         <Form className="txtareaForm">
-    //           <Form.Group className="textGrp">
-    //             <Form.Control
-    //             type="text"                
-    //             placeholder="Write something..." 
-    //             value={message}
-    //             onChange={event => setMessage(event.target.value)}
-    //             className="textarea"
-    //             />
-    //           </Form.Group>
-    //           <Button onClick={e => sendChat(e)} type="submit" className="sndBtn" >Send</Button>
-    //         </Form>
-    //         </>
-    //       :
-    //         <></>
-    //     }
-
-    //     {/* Inbox / All the conversations of the user */}
-    //     <Card.Body className='overflow-auto' id="chatRoom">
-    //       {conversation.map((c) => (
-    //         <div onClick={() => setCurrentChat(c)} >
-    //         <Chatroom conversation={c} currentUser={currentUser._id} />
-    //         </div>
-    //       ))}
-    //     </Card.Body>        
-    //     </Card>        
-    // </Container>
-    // </>
   )
 }
 
