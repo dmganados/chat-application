@@ -1,24 +1,25 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 // Implement page routing
 // acquire the utilities from react-router-dom
-import { BrowserRouter, Routes, Route, useRoutes } from 'react-router-dom'
-import io from 'socket.io-client';
+import { BrowserRouter, Routes, Route} from 'react-router-dom'
+
 
 // Acquire the pages that will make up the app
 import Register from './pages/register/Register';
 import Login from './pages/login/Login';
 import Chat from './pages/chat/Chat';
 
-const socket = io.connect("http://localhost:4000")
-export default function App() {
+function App() {
+
   return (
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<Register />} />
         <Route path="/login" element={<Login />} />
         <Route path="chat" element={<Chat />} />
-        {/* {['chat', ':id'].map(path => <Route path={path} element={<Chat />} />)}         */}
       </Routes>
     </BrowserRouter>
   )
 }
+
+export default App;

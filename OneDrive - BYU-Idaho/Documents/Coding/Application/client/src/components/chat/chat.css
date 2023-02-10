@@ -115,11 +115,8 @@
         cursor: pointer;
     }
 
-    /* #edit:hov, #delete */
-
     .time {
         font-size: 12px;
         background-color: #4C6663;
-        /* margin-top: -16px; */
     }
 }

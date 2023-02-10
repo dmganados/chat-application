@@ -17,4 +17,14 @@
     .lgnGroup {
         margin-bottom: 3%;
     }
+
+    .regStament, .regLink {
+        background-color: #4C6663;
+        margin: 15px auto auto auto;
+        color: black;
+    }
+    
+    .regLink:hover {
+       color: black;
+    }
 }

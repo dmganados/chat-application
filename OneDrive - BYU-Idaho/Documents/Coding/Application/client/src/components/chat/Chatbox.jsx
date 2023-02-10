@@ -4,6 +4,7 @@ import {format} from 'timeago.js'
 export default function Chatbox({chat, ownMsg, currentUser})  {
     const [message, setMessage] = useState([]);
     const [update, setUpdate] = useState(false);
+    console.log(chat)
 
     const toggleEditMode = () => {
         setUpdate(!update);
@@ -53,14 +54,18 @@ export default function Chatbox({chat, ownMsg, currentUser})  {
                 </div>
                 <div className='functions'>
                     {chat.sender === currentUser && (
-                        <span className={ownMsg} id="delete" onClick={deleteHandler}>Delete</span>
+                        <span id="delete" onClick={deleteHandler}>Delete</span>
                     )}
                     {chat.sender === currentUser && (
-                        <span className={ownMsg} id="edit" onClick={toggleEditMode}>Edit</span>
+                        <span id="edit" onClick={toggleEditMode}>Edit</span>
                     )}
-                    {update && (
-                        <button onClick={editHandler}>Save</button>
+                    {update && ( 
+                        <button onClick={editHandler}>&#x2713;</button>
                     )}
+                    {update && ( 
+                        <button>X</button>
+                    )}
+                    
                 </div>
                 <div className="time">{format(chat.createdAt)}</div>
             </main>   

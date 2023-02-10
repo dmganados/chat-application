@@ -6,7 +6,7 @@ import Notification from '../../components/notification/Notification'
 import Chatroom from '../../components/chat/Chatroom'
 import ChatBanner from "../../components/chat/Chatbanner";
 import ReactScrollableFeed from 'react-scrollable-feed';
-import {io} from "socket.io-client"
+import {io, Socket} from "socket.io-client"
 
 
 export default function Chat() {
@@ -18,16 +18,13 @@ export default function Chat() {
   const [message, setMessage] = useState('');
   const [arrivalMessage, setArrivalMessage] = useState(null);
   const [currentUser, setCurrentUser] = useState([]);
-  const socket = useRef();
+  const [isFilled, setIsFilled] = useState(false);
   let convoId = currentChat?._id;
   let token = localStorage.accessToken;
   let userName = `${currentUser.firstName} ${currentUser.lastName}`;
-  let receiver = currentChat?.users.find(mate => mate !== currentUser._id);
+  const socket = useRef();
 
-  useEffect(() => {
-      socket.current = io("http://localhost:4000");
-      socket.current.emit("addUser", currentUser._id); 
-  },[currentUser])
+  // console.log(convoId)
 
   useEffect(() => {    
     profile();
@@ -69,8 +66,9 @@ export default function Chat() {
       await fetch('http://localhost:4000/user/all-users').then(res => res.json()).then(contactsData => {
       setContactsCollection(contactsData.map(contactList => {   
         let user = currentUser._id
+        // let socketIo = socket
         return(
-          <Contacts key={contactList._id} contactsProp={contactList} currentUser={user} />                  
+          <Contacts key={contactList._id} contactsProp={contactList} currentUser={user} socket={socket} />                  
         )
       }));
     });
@@ -93,7 +91,14 @@ export default function Chat() {
     getMessage()
   },[convoId])
 
-  // Create send button function
+  // Integrate the websocket for real time chat
+  useEffect(() => {
+    socket.current = io("ws://localhost:4000");
+    socket.current.emit("addUser", currentUser._id); 
+    socket.current.on("getUsers", users => {console.log(users)})    
+  },[currentUser])
+
+  // Create send handler
   // After the user enters/submit his/her message, a new message will be created.
   const handleSendChat = async (event) => { 
     event.preventDefault() 
@@ -115,8 +120,8 @@ export default function Chat() {
       }
     })
     }    
+    let receiver = currentChat?.users.find(mate => mate !== currentUser._id);
     socket.current.emit("sendMessage", {
-      conversationId: convoId,
       senderId: currentUser._id,
       receiverId: receiver,
       message: message,
@@ -127,20 +132,47 @@ export default function Chat() {
     setChat(msg)
     }
 
-  useEffect(() => {
-      socket.current.on("messageReceive", data => {
-        setArrivalMessage({
-          conversationId: data.conversationId,
-          sender: data.senderId,
-          message: data.message,
-          createdAt: Date.now(),
-        })
-      })
-    },[])
+  // This will catch the message sent by the sender
+  // useEffect(() => {
+  //   socket.current.on("receive_message", (data) => {
+  //     console.log(data)
+  //   })
+  // }, [socket.current])
+
 
   useEffect(() => {
-    arrivalMessage && setMessage((prev) => [...prev, arrivalMessage]);
+    socket.current.on("messageReceive", (data) => {
+      // console.log(data)
+      // setChat((prev) => [...prev, data])
+      // console.log(data);
+      setArrivalMessage({
+        receiverId: data.receiverId,
+        message: data.message,
+        createdAt: Date.now(),
+      })
+      // setChat((prev) => [...prev, arrivalMessage])
+    })
+  },[socket.current])
+  // console.log(arrivalMessage)
+
+  useEffect(() => {
+    arrivalMessage && setChat((prev) => [...prev, arrivalMessage]);
   },[arrivalMessage]);
+
+  // Send button will show if text area is filled
+  useEffect(() => {
+    if (message !== "") {
+      setIsFilled(true)
+    } else {
+      setIsFilled(false)
+    }
+  },[message])
+
+  // Create a logout function and redirect the user to login page if successfully loged out
+  const logout = () => {
+    localStorage.clear();
+    window.location.href="/login";
+  }
     
 
   return(
@@ -150,7 +182,7 @@ export default function Chat() {
           <NavDropdown title={userName} className="navigation">
             {/* Change hover color */}
             <NavDropdown.Item>Profile</NavDropdown.Item>
-            <NavDropdown.Item>Logout</NavDropdown.Item>
+            <NavDropdown.Item onClick={logout}>Logout</NavDropdown.Item>
           </NavDropdown >
           </Navbar.Collapse>
           
@@ -200,7 +232,7 @@ export default function Chat() {
         </Tab.Container>
       </Card>
       {/* Create section for the chatbox. 
-      In this section, the user can see the name of his friend, can write message, and send (optional: can edit and delete message) */}
+      In this section, the user can see the name of his friend, can write message, send, edit and delete message */}
       
         <Card className="overflow-auto  chatbox">
           <>
@@ -218,11 +250,12 @@ export default function Chat() {
           </>
         </Card>
 
+          {/* Text area and send button */}
         <Card className="buttonCard">
           {
             currentChat?
               <>
-              <Form className="txtareaForm">
+              <Form onSubmit={handleSendChat} className="txtareaForm">
                 <Form.Group className="textGrp">
                   <Form.Control
                   type="text"                
@@ -232,7 +265,14 @@ export default function Chat() {
                   className="textarea"
                   />
                 </Form.Group>
-                <Button onClick={e => handleSendChat(e)} type="submit" className="sndBtn" >Send</Button>
+                <>
+                {
+                  isFilled?
+                  <Button  type="submit" className="sndBtn" >Send</Button>
+                  :
+                  <></>
+                }                
+                </>
               </Form>
               </>
             :
@@ -244,22 +284,12 @@ export default function Chat() {
 }
 
 // Create profile page
-// Create an update function
-// Create a delete function
-// Function for duplicate email
-// Logout funtion
 // Update name
 // Notification
 // Options for contacts (check profile)
 // Create error page for non existing page
-// Create all convo secton
-// Create contacts page and option to chat
-// Get friends id and compare it to the current user; diplay the names right after
 // Use a welcome page in the chat box
 // Change the logo of the app
-// Try the register form
-// The user can switch friends to send message
-// The user can also send message to a friend that is not from the inbox
 // Uninstall axios
 // https://www.youtube.com/watch?v=otaQKODEUFs   3:50
 // https://www.youtube.com/watch?v=NU-HfZY3ATQ

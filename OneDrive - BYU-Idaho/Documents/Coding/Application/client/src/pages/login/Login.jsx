@@ -1,6 +1,7 @@
 import React from "react";
 import { Form, Button, Container, Card, Row } from 'react-bootstrap';
 import { useState, useEffect, useContext } from 'react';
+import { Link } from "react-router-dom";
 
 function Login() {
 
@@ -87,8 +88,9 @@ function Login() {
 				:
 				<Button	variant="success" type="submit" disabled>Login</Button>
 			}
+			<span className="regStament">No account? <Link to="/" className="regLink">Register</Link></span>
 			</Card>		
-			</Row>				
+			</Row>							
         </Form>
       </Container>	  
     </>
