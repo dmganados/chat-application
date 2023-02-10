@@ -6,6 +6,7 @@ import Notification from '../../components/notification/Notification'
 import Chatroom from '../../components/chat/Chatroom'
 import ChatBanner from "../../components/chat/Chatbanner";
 import ReactScrollableFeed from 'react-scrollable-feed';
+import Profile from "../profile/Profile";
 import {io, Socket} from "socket.io-client"
 
 
@@ -49,6 +50,7 @@ export default function Chat() {
       }
     }).then(res => res.json()).then(data => {  
       setCurrentUser(data)
+      
       // Once you get the profile get the id to use as a reference of all its conversations
       let id = data._id;
       fetch(`http://localhost:4000/conversations/connect/${id}`).then(res => res.json()).then(connect => {
@@ -120,6 +122,7 @@ export default function Chat() {
       }
     })
     }    
+    // After the send button is triggered the message will be sent to the server
     let receiver = currentChat?.users.find(mate => mate !== currentUser._id);
     socket.current.emit("sendMessage", {
       senderId: currentUser._id,
@@ -133,28 +136,17 @@ export default function Chat() {
     }
 
   // This will catch the message sent by the sender
-  // useEffect(() => {
-  //   socket.current.on("receive_message", (data) => {
-  //     console.log(data)
-  //   })
-  // }, [socket.current])
-
-
   useEffect(() => {
     socket.current.on("messageReceive", (data) => {
-      // console.log(data)
-      // setChat((prev) => [...prev, data])
-      // console.log(data);
       setArrivalMessage({
         receiverId: data.receiverId,
         message: data.message,
         createdAt: Date.now(),
       })
-      // setChat((prev) => [...prev, arrivalMessage])
     })
   },[socket.current])
-  // console.log(arrivalMessage)
 
+  // The new message will be push to the chat hook which handles all the messages
   useEffect(() => {
     arrivalMessage && setChat((prev) => [...prev, arrivalMessage]);
   },[arrivalMessage]);
@@ -181,7 +173,7 @@ export default function Chat() {
           <Navbar.Collapse className="navItems">
           <NavDropdown title={userName} className="navigation">
             {/* Change hover color */}
-            <NavDropdown.Item>Profile</NavDropdown.Item>
+            <NavDropdown.Item href="/profile">Profile</NavDropdown.Item>
             <NavDropdown.Item onClick={logout}>Logout</NavDropdown.Item>
           </NavDropdown >
           </Navbar.Collapse>
@@ -240,12 +232,12 @@ export default function Chat() {
             currentChat?
               <ReactScrollableFeed className="chatDiv">                             
                 {chat.map((convo) =>(                       
-                    <Chatbox chat={convo} ownMsg={convo.sender === currentUser._id} socket={socket} currentUser={currentUser._id} />                   
+                    <Chatbox chat={convo} ownMsg={convo.sender === currentUser._id} socket={socket} currentUser={currentUser._id} conversationId={convoId} socketIO={socket} />                   
                 ))}               
                 
               </ReactScrollableFeed>                       
             :              
-              <span className="noConvo">Start a conversation</span>              
+              <span className="noConvo">Select a person to start a conversation</span>              
           }   
           </>
         </Card>

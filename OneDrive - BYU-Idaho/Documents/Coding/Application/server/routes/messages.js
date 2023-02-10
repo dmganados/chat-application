@@ -29,6 +29,14 @@ route.get('/messages/:conversationId', (req, res) => {
     })
 });
 
+// route.get('/messages', auth.verify, (req, res) => {
+//     let user = auth.decode(req.headers.authorization);
+//     let userId = user.id
+//     controller.getAllMessages(userId).then(result => {
+//         res.send(result)
+//     })
+// })
+
 // Update Message
 route.put('/messages/update/:msgId', (req, res) => {
     let id = req.params.msgId;

@@ -1,25 +1,29 @@
 import React, {useState, useEffect} from 'react'
 import {format} from 'timeago.js'
 
-export default function Chatbox({chat, ownMsg, currentUser})  {
+export default function Chatbox({chat, ownMsg, currentUser, socketIO})  {
     const [message, setMessage] = useState([]);
     const [update, setUpdate] = useState(false);
-    console.log(chat)
+    // console.log(chat)
+
+    useEffect(() => {
+        socketIO.current.on()
+    })
 
     const toggleEditMode = () => {
         setUpdate(!update);
     }
 
-    const deleteHandler = async(event) => {
-        event.preventDefault();
+    const deleteHandler = async() => {
         let del = await fetch(`http://localhost:4000/message/messages/delete/${chat._id}`,{
             method: "DELETE"
         }).then(res => res.json()).then(removed => {
             if (removed) {
-                return true;
+                socketIO.current.emit('delete', chat._id);
             } else {
                 return false;
             }
+            
         });
     };
 
@@ -37,6 +41,10 @@ export default function Chatbox({chat, ownMsg, currentUser})  {
             setUpdate(false);
         })
     }
+
+    const closeHandler = async () => {
+        setUpdate(false);
+    }
        
     return(
         <>
@@ -44,7 +52,7 @@ export default function Chatbox({chat, ownMsg, currentUser})  {
                 <div className="message">
                     {update ? 
                         (
-                            <textarea value={message} onChange={(e) => setMessage(e.target.value)} />
+                            <textarea className='editArea' value={message} onChange={(e) => setMessage(e.target.value)} />
                         ) 
                         :
                         (
@@ -60,10 +68,10 @@ export default function Chatbox({chat, ownMsg, currentUser})  {
                         <span id="edit" onClick={toggleEditMode}>Edit</span>
                     )}
                     {update && ( 
-                        <button onClick={editHandler}>&#x2713;</button>
+                        <button className='checkBtn' onClick={editHandler}>&#x2713;</button>
                     )}
                     {update && ( 
-                        <button>X</button>
+                        <button className='checkBtn' onClick={closeHandler}>X</button>
                     )}
                     
                 </div>

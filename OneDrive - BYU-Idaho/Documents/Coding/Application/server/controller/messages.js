@@ -28,6 +28,12 @@ module.exports.getMessage = (id) => {
     })
 }
 
+// module.exports.getAllMessages = () => {
+//     return Message.find({}).then(result => {
+//         return result
+//     })
+// }
+
 // Update message
 module.exports.editMessage = (id, data) => {
     // console.log(id)

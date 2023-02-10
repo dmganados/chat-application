@@ -119,4 +119,18 @@
         font-size: 12px;
         background-color: #4C6663;
     }
+
+    .editArea {
+        background-color: whitesmoke !important;
+        /* margin-top: -5%; */
+    }
+
+    .checkBtn {
+        border: none;
+        border-radius: 10%;
+        padding: 2%;
+        background-color: rgb(190, 187, 187);
+        margin-left: -20%;
+        margin-right: 25%;
+    }
 }
