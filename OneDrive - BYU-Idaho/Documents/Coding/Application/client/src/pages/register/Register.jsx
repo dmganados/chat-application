@@ -78,33 +78,33 @@ function Register() {
 
   return (
     <>
-     <Container>      
+     <Container className="regContainer">      
         <Form className="regForm" onSubmit={e => registerUser(e)}>   
         <Row>
         <Card id="regCard"> 
           <Form.Group className="regGroup">
             <Form.Label className="regLabel">First Name</Form.Label>
-            <Form.Control type="text" placeholder="Enter your first name" required id="frstNmInput" value={firstName} onChange={e => setFirstName(e.target.value)} />
+            <Form.Control className="textArea" type="text" placeholder="Enter your first name" required id="frstNmInput" value={firstName} onChange={e => setFirstName(e.target.value)} />
           </Form.Group>
 
           <Form.Group className="regGroup">
             <Form.Label className="regLabel">Last Name</Form.Label>
-            <Form.Control type="text" placeholder="Enter your last name" required id="lstNmInput" value={lastName} onChange={e => setLastName(e.target.value)} />
+            <Form.Control className="textArea" type="text" placeholder="Enter your last name" required id="lstNmInput" value={lastName} onChange={e => setLastName(e.target.value)} />
           </Form.Group>
 
           <Form.Group className="regGroup">
             <Form.Label className="regLabel">Email</Form.Label>
-            <Form.Control type="email" placeholder="Enter your email address" required id="emlInput" value={email} onChange={e => setEmail(e.target.value)} />
+            <Form.Control className="textArea" type="email" placeholder="Enter your email address" required id="emlInput" value={email} onChange={e => setEmail(e.target.value)} />
           </Form.Group>
 
           <Form.Group className="regGroup">
 						<Form.Label className="regLabel">Password:</Form.Label>
-						<Form.Control type="password" placeholder="Enter your password" required id="pssInput" value={password1} onChange={e => setPassword1(e.target.value)} />
+						<Form.Control className="textArea" type="password" placeholder="Enter your password" required id="pssInput" value={password1} onChange={e => setPassword1(e.target.value)} />
 					</Form.Group>
 
           <Form.Group className="regGroup">
 						<Form.Label className="regLabel">Confirm password:</Form.Label>
-						<Form.Control type="password" placeholder="Confirm your password" required id="cnfrmPssInput" value={password2} onChange={e => setPassword2(e.target.value)} />
+						<Form.Control className="textArea" type="password" placeholder="Confirm your password" required id="cnfrmPssInput" value={password2} onChange={e => setPassword2(e.target.value)} />
 
             {
 							isCorrect ?
@@ -116,15 +116,14 @@ function Register() {
 
           {
             isActive ?
-              <Button variant="success" className="btn-block regBtn" type="submit">Proceed</Button>
+              <Button variant="success" className="btn-block regBtn" type="submit">Register</Button>
             :
               <Button variant="success" className="btn-block regBtn" disabled>Register</Button>
           }
           <span id="lgnStatement">Already have an account? <Link to="/login" id="lgnLink">Login</Link> </span>
         </Card> 
         </Row> 
-        </Form>  
-             
+        </Form>               
      </Container>
     </>
   )

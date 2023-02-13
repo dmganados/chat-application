@@ -45,47 +45,6 @@
         console.log(`API is now online on port ${port}`)
     })
 
-
-
-    // global.onlineUsers = new Map();
-
-    // io.on("connection", (socket) => {
-    //     console.log(`User ${socket.id} is connected`)
-    //     global.chatSocket = socket;
-    //     socket.on("addUser", (userId) => {
-    //         // console.log(userId)
-    //         if(userId === null) {
-    //             return false
-    //         } else {
-    //             onlineUsers.set(userId, socket.id)
-    //         }
-            // io.emit("getUser", onlineUsers)
-        // console.log(onlineUsers)
-        // console.log(onlineUsers.get(userId))
-        // });
-
-        // socket.on("sendMessage", (data) => {
-        //     console.log(data)
-        //     let rcv = data.receiverId
-        //     const receiver = onlineUsers.get(rcv);
-            // console.log(onlineUsers.get(receiverId))
-    //         console.log(receiver)
-    //         if(receiver) {
-    //             socket.to(receiver).emit("messageReceive", data)
-    //         }
-    //     })
-
-    //     socket.on("disconnect", () => {
-    //         console.log(`User ${socket.id} disconnected.`)
-    //     })
-    // });
-
-    // console.log("Number of key-value pairs:", global.onlineUsers.size);
-
-    // for (const [key, value] of global.onlineUsers.entries()) {
-    // console.log(key, value);
-    // }
-
     const io = new Server(server, {
         cors: {
             origin: "http://localhost:3000",
@@ -137,37 +96,17 @@
             socket.join(roomId);
             console.log(`${socket.id} is connected to the room ${roomId}`);
         })
-
-        // socket.on("sendMessage", (data) => {
-        //     console.log(data)
-        //     console.log(data.conversationId)
-        //     const { conversationId, senderId, receiverId, message } = data;
-
-        //     // const targetSocket = ...;
-        //     targetSocket.emit("receive_message", {
-        //         senderId,
-        //         message
-        //     })
-
-
-
-
-            // socket.to(data.conversationId).emit("receive_message", data.message)
-        // })
  
         socket.on("sendMessage", ({senderId, receiverId, message}) => {
-            console.log({senderId, receiverId, message})
             const rcv = receiver(receiverId)
-            console.log(rcv.socketId)
-            // io.to(rcv.socketId).emit("messageReceive", {senderId, receiverId, message})
-            // io.to(receiverId).emit("messageReceive", {senderId, receiverId, message})
-            
-            // Change the !socketId
-            // Make a condition that sender can still send to both online and not online friend.
             if (rcv) {
                 io.to(rcv.socketId).emit("messageReceive", { receiverId, message })
             } 
         });
+
+        socket.on("deleteMessage", (id) => {
+            io.emit('deleted', id)
+        })
 
         socket.on("disconnect", ()=> {
             console.log("A user diconnected:", socket.id);

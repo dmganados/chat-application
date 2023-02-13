@@ -65,7 +65,7 @@ module.exports.deleteMessage = (msgId) => {
                 if (err) {
                     return "Failed to delete message"
                 } else {
-                    return "Successfully deleted the message"
+                    return deleteMsg
                 }
             })
         }

@@ -15,12 +15,20 @@ export default function Chatroom({conversation, currentUser}) {
     },[friendId])
 
     return(
-        <>               
+        <>        
+        {/*Large Screen  */}
         <Card id="chtRmDiv">  
             <Card.Body id="chtRmCard">
             {user?.firstName} {user?.lastName}
             </Card.Body>      
-        </Card>             
+        </Card>       
+
+        {/* Small Screen */}
+        {/* <Card id="smchtRmDiv">  
+            <Card.Body id="smchtRmCard">
+            {user?.firstName} {user?.lastName}
+            </Card.Body>      
+        </Card>          */}
         </>
     )
 }

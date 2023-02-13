@@ -74,19 +74,19 @@ function Login() {
 			<Card id="lgnCard">
           	<Form.Group className="lgnGroup">
             	<Form.Label className="lgnLabel">Email:</Form.Label>
-            	<Form.Control type="email" placeholder="Enter Email Here" required value={email} onChange={event => {setEmail(event.target.value)}} />
+            	<Form.Control className="textArea" type="email" placeholder="Enter Email Here" required value={email} onChange={event => {setEmail(event.target.value)}} />
           	</Form.Group>
 
           	<Form.Group className="lgnGroup">
 				<Form.Label className="lgnLabel">Password:</Form.Label>
-				<Form.Control type="password" placeholder="Enter Password Here" required value={password} onChange={e => {setPassword(e.target.value)}} />
+				<Form.Control className="textArea" type="password" placeholder="Enter Password Here" required value={password} onChange={e => {setPassword(e.target.value)}} />
 			</Form.Group>
 					
 			{
 				isActive ?
-				<Button	variant="success" type="submit">Login</Button>
+				<Button className="loginBtn" variant="success" type="submit">Login</Button>
 				:
-				<Button	variant="success" type="submit" disabled>Login</Button>
+				<Button className="loginBtn" variant="success" type="submit" disabled>Login</Button>
 			}
 			<span className="regStament">No account? <Link to="/" className="regLink">Register</Link></span>
 			</Card>		

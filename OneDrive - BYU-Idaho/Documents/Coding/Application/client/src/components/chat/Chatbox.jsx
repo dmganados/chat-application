@@ -4,11 +4,15 @@ import {format} from 'timeago.js'
 export default function Chatbox({chat, ownMsg, currentUser, socketIO})  {
     const [message, setMessage] = useState([]);
     const [update, setUpdate] = useState(false);
-    // console.log(chat)
+    const [isFilled, setIsFilled] = useState([]);
 
     useEffect(() => {
-        socketIO.current.on()
-    })
+        if (message !== "") {
+            setIsFilled(true)
+        } else {
+            setIsFilled(false)            
+        }
+    },[message])
 
     const toggleEditMode = () => {
         setUpdate(!update);
@@ -18,14 +22,18 @@ export default function Chatbox({chat, ownMsg, currentUser, socketIO})  {
         let del = await fetch(`http://localhost:4000/message/messages/delete/${chat._id}`,{
             method: "DELETE"
         }).then(res => res.json()).then(removed => {
-            if (removed) {
-                socketIO.current.emit('delete', chat._id);
-            } else {
-                return false;
-            }
-            
+            console.log(removed)
+            socketIO.current.emit('deleteMessage', {id:removed._id,});            
         });
     };
+
+    useEffect(() => {
+        socketIO.current.on('deleted', (data) => {
+            
+        })
+    },[socketIO.current])
+
+    
 
     const editHandler = async(event) => {
         event.preventDefault();

@@ -32,19 +32,28 @@ export default function Contacts({contactsProp, socket}) {
             return false
         }    
         alert("A new connection is added. Refresh the page to start conversation.")
-        // window.location.href = "/chat";  
+        window.location.href = "/chat";  
         })      
       }
     
 
     return(
         <>  
+            {/* Large Screen */}
             <Card id='cntctsDiv' >     
                 <Card.Body id="cntctCard">          
                     {contactsProp.firstName} {contactsProp.lastName}
                     <Button onClick={e => connectHandler(e)} className="connectBtn">Connect</Button>
                 </Card.Body> 
-            </Card>                   
+            </Card>  
+
+            {/* Small Screen */}
+            <Card id='smcntctsDiv' >     
+                <Card.Body id="smcntctCard">          
+                    {contactsProp.firstName} {contactsProp.lastName}
+                    <Button onClick={e => connectHandler(e)} className="connectBtn">Connect</Button>
+                </Card.Body> 
+            </Card>                
         </>
     )
 }

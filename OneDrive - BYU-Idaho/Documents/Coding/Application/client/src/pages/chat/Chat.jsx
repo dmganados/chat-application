@@ -1,12 +1,11 @@
 import React, { useState, useEffect, useRef} from "react";
-import { Form, Button, Card, Tab, Nav, Navbar, NavDropdown } from 'react-bootstrap';
+import { Form, Button, Card, Tab, Nav, Navbar, NavDropdown, Modal } from 'react-bootstrap';
 import Contacts from '../../components/contacts/Contacts';
 import Chatbox from '../../components/chat/Chatbox';
 import Notification from '../../components/notification/Notification'
 import Chatroom from '../../components/chat/Chatroom'
 import ChatBanner from "../../components/chat/Chatbanner";
 import ReactScrollableFeed from 'react-scrollable-feed';
-import Profile from "../profile/Profile";
 import {io, Socket} from "socket.io-client"
 
 
@@ -20,12 +19,13 @@ export default function Chat() {
   const [arrivalMessage, setArrivalMessage] = useState(null);
   const [currentUser, setCurrentUser] = useState([]);
   const [isFilled, setIsFilled] = useState(false);
+  const [show, setShow] = useState(false);
   let convoId = currentChat?._id;
   let token = localStorage.accessToken;
   let userName = `${currentUser.firstName} ${currentUser.lastName}`;
   const socket = useRef();
 
-  // console.log(convoId)
+  // console.log(popUp)
 
   useEffect(() => {    
     profile();
@@ -121,7 +121,7 @@ export default function Chat() {
         return false
       }
     })
-    }    
+}    
     // After the send button is triggered the message will be sent to the server
     let receiver = currentChat?.users.find(mate => mate !== currentUser._id);
     socket.current.emit("sendMessage", {
@@ -165,19 +165,29 @@ export default function Chat() {
     localStorage.clear();
     window.location.href="/login";
   }
+
+  // Show modal. This will only display for small screnn 
+  const handleShow = () => {
+    setShow(true);
+  }
+
+  // Close modal.
+  const handleClose = () => {
+    setShow(false);
+  }
+
     
 
   return(
-    <div className="main">  
+    <div>
+    <div className="largeScrn">        
         <Navbar className="topCard">
           <Navbar.Collapse className="navItems">
           <NavDropdown title={userName} className="navigation">
-            {/* Change hover color */}
             <NavDropdown.Item href="/profile">Profile</NavDropdown.Item>
             <NavDropdown.Item onClick={logout}>Logout</NavDropdown.Item>
           </NavDropdown >
           </Navbar.Collapse>
-          
         </Navbar>
         <div className="bannerContainer">
           {
@@ -209,7 +219,7 @@ export default function Chat() {
               <Tab.Content className="overflow-auto tabContent">
                 <Tab.Pane eventKey="first">
                 {conversation.map((c) => (    
-                  <div onClick={() => setCurrentChat(c)} >              
+                  <div className="chatRoom" onClick={() => setCurrentChat(c)} >              
                   <Chatroom conversation={c} currentUser={currentUser._id} />   
                   </div>               
                 ))}
@@ -270,18 +280,113 @@ export default function Chat() {
             :
               <></>
           }
-          </Card>
+          </Card> 
+    </div>
+
+    {/* Small Screen */}
+    <div className="smallScreen">  
+        <Navbar className="smtopCard">
+          <Navbar.Collapse className="smnavItems">
+          <NavDropdown title={userName} className="smnavigation">
+            <NavDropdown.Item href="/profile">Profile</NavDropdown.Item>
+            <NavDropdown.Item onClick={logout}>Logout</NavDropdown.Item>
+          </NavDropdown >
+          </Navbar.Collapse>
+        </Navbar>    
+      <Card className="smleftSection">
+        <Tab.Container className="smtabContainer" defaultActiveKey="first">          
+              <Nav className="smmenu">
+                <Nav.Item id="smchat" >
+                  <Nav.Link eventKey="first" className="smchatLink" >Chat</Nav.Link>
+                </Nav.Item>
+                <Nav.Item  id="smcontacts" >
+                  <Nav.Link eventKey="second" className="smchatLink" >Contacts</Nav.Link>
+                </Nav.Item>
+                <Nav.Item id="smnotification" >
+                  <Nav.Link eventKey="third" className="smchatLink" >Notification</Nav.Link>
+                </Nav.Item>
+              </Nav>
+              <Tab.Content className="overflow-auto smtabContent">
+                <Tab.Pane eventKey="first">
+                {conversation.map((c) => (    
+                  <div className="smchatRoom" onClick={() => {setCurrentChat(c); handleShow()}} >              
+                  <Chatroom conversation={c} currentUser={currentUser._id} />   
+                  </div>               
+                ))}
+                </Tab.Pane>
+                <Tab.Pane eventKey="second">
+                    {contactsCollection}
+                </Tab.Pane>
+                <Tab.Pane eventKey="third">
+                  <Notification />
+                </Tab.Pane>
+              </Tab.Content>                       
+        </Tab.Container>
+      </Card>
+
+      <Modal show={show} backdrop="static" keyboard={false} animation={false} >
+              <Modal.Header>
+                  <Modal.Title>
+                    <div className="smbnrContainer">
+                    {
+                      // If there is no friend selected, the name will not be diplayed in the banner.
+                      currentChat?     
+                      <Card.Body className="smbannerBody">     
+                            <ChatBanner activeChat={currentChat?.users} myId={currentUser._id} />
+                      </Card.Body>
+                      :
+                        <></>
+                    }
+                    </div>
+                  </Modal.Title>
+                  <span className="modalClose" variant="secondary" onClick={handleClose}>&larr;</span>
+              </Modal.Header>
+                  
+                  <Modal.Body>
+                  {          
+                    currentChat?
+                      <ReactScrollableFeed className="smchatDiv">                             
+                        {chat.map((convo) =>(                       
+                            <Chatbox chat={convo} ownMsg={convo.sender === currentUser._id} socket={socket} currentUser={currentUser._id} conversationId={convoId} socketIO={socket} />                   
+                        ))}               
+                        
+                      </ReactScrollableFeed>                       
+                    :              
+                      <></>             
+                  }   
+                  </Modal.Body>
+                  <>
+                  <Card className="smbuttonCard">
+                  {
+                    currentChat?
+                      <>
+                      <Form onSubmit={handleSendChat} className="smtxtareaForm">
+                        <Form.Group className="smtextGrp">
+                          <Form.Control
+                          type="text"                
+                          placeholder="Write something..." 
+                          value={message}
+                          onChange={event => setMessage(event.target.value)}
+                          className="smtextarea"
+                          />
+                        </Form.Group>
+                        <>
+                        {
+                          isFilled?
+                          <Button  type="submit" className="smsndBtn" >Send</Button>
+                          :
+                          <></>
+                        }                
+                        </>
+                      </Form>
+                      </>
+                    :
+                      <></>
+                  }
+                  </Card>
+                  </>
+      </Modal>  
+    </div>
     </div>
   )
 }
-
-// Create profile page
-// Update name
-// Notification
-// Options for contacts (check profile)
-// Create error page for non existing page
-// Use a welcome page in the chat box
-// Change the logo of the app
-// Uninstall axios
-// https://www.youtube.com/watch?v=otaQKODEUFs   3:50
-// https://www.youtube.com/watch?v=NU-HfZY3ATQ
