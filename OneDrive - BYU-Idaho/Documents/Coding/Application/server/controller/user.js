@@ -2,6 +2,7 @@
 const User = require('../model/User');
 const bcrypt = require('bcrypt');
 const auth = require('../auth');
+const { model } = require('mongoose');
 
 // User Registration
 module.exports.userReg = (reg) => {
@@ -72,6 +73,46 @@ module.exports.getAllUsers = () => {
 
 module.exports.findUsers = (id) => {
     return User.findById(id).then(result => {
-        return result
+        if (result) {
+            return result
+        } else {
+            return false
+        }
     });
 };
+
+// Update user information
+module.exports.updateUser = (id, data) => {
+    let fName = data.firstName;
+    let lName = data.lastName;
+    let email = data.email;    
+    let updated = {
+        firstName: fName,
+        lastName: lName
+    }
+
+    return User.findByIdAndUpdate(id, updated).then((profileUpdated, err) => {
+        if (profileUpdated) {
+            return(profileUpdated)
+        } else {
+            return 'Failed to update profile'
+        }
+    })
+}
+
+// Delete account
+module.exports.deleteProfile = (id) => {
+    return User.findById(id).then(userId => {
+        if (userId === null) {
+            return 'Account not found'
+        } else {
+            return userId.remove().then((profileRemoved, err) => {
+                if (err) {
+                    return 'Failed to delete'
+                } else {
+                    return 'Account deleted'
+                }
+            })
+        }
+    })
+}

@@ -2,11 +2,10 @@ import React, { useState, useEffect, useRef} from "react";
 import { Form, Button, Card, Tab, Nav, Navbar, NavDropdown, Modal } from 'react-bootstrap';
 import Contacts from '../../components/contacts/Contacts';
 import Chatbox from '../../components/chat/Chatbox';
-import Notification from '../../components/notification/Notification'
 import Chatroom from '../../components/chat/Chatroom'
 import ChatBanner from "../../components/chat/Chatbanner";
 import ReactScrollableFeed from 'react-scrollable-feed';
-import {io, Socket} from "socket.io-client"
+import {io} from "socket.io-client"
 
 
 export default function Chat() {
@@ -20,12 +19,11 @@ export default function Chat() {
   const [currentUser, setCurrentUser] = useState([]);
   const [isFilled, setIsFilled] = useState(false);
   const [show, setShow] = useState(false);
+  const [isActive, setIsActive] = useState(false);
   let convoId = currentChat?._id;
   let token = localStorage.accessToken;
   let userName = `${currentUser.firstName} ${currentUser.lastName}`;
   const socket = useRef();
-
-  // console.log(popUp)
 
   useEffect(() => {    
     profile();
@@ -68,7 +66,6 @@ export default function Chat() {
       await fetch('http://localhost:4000/user/all-users').then(res => res.json()).then(contactsData => {
       setContactsCollection(contactsData.map(contactList => {   
         let user = currentUser._id
-        // let socketIo = socket
         return(
           <Contacts key={contactList._id} contactsProp={contactList} currentUser={user} socket={socket} />                  
         )
@@ -93,11 +90,27 @@ export default function Chat() {
     getMessage()
   },[convoId])
 
+  // Create a function that a user could not sen message to a deactivated account.
+  useEffect(() => {
+      let frndId = currentChat?.users.find(mate => mate !== currentUser._id);
+      let getUser = async () => {
+        if (frndId !== undefined) {
+          await fetch(`http://localhost:4000/user/profile/${frndId}`).then(res => res.json()).then(friend => {
+              setIsActive(friend)
+          });
+        } else {
+          return false
+        }
+      } 
+    getUser();
+  })
+
   // Integrate the websocket for real time chat
   useEffect(() => {
     socket.current = io("ws://localhost:4000");
     socket.current.emit("addUser", currentUser._id); 
-    socket.current.on("getUsers", users => {console.log(users)})    
+    // This is just to check if socket.io connection is successful
+    // socket.current.on("getUsers", users => {console.log(users)})    
   },[currentUser])
 
   // Create send handler
@@ -121,7 +134,7 @@ export default function Chat() {
         return false
       }
     })
-}    
+    }    
     // After the send button is triggered the message will be sent to the server
     let receiver = currentChat?.users.find(mate => mate !== currentUser._id);
     socket.current.emit("sendMessage", {
@@ -166,17 +179,15 @@ export default function Chat() {
     window.location.href="/login";
   }
 
-  // Show modal. This will only display for small screnn 
+  // Show modal. This will only display for small screen 
   const handleShow = () => {
     setShow(true);
   }
 
-  // Close modal.
+  // Close modal. This will only display for small screen 
   const handleClose = () => {
     setShow(false);
   }
-
-    
 
   return(
     <div>
@@ -212,9 +223,6 @@ export default function Chat() {
                 <Nav.Item  id="contacts" >
                   <Nav.Link eventKey="second" className="chatLink" >Contacts</Nav.Link>
                 </Nav.Item>
-                <Nav.Item id="notification" >
-                  <Nav.Link eventKey="third" className="chatLink" >Notification</Nav.Link>
-                </Nav.Item>
               </Nav>
               <Tab.Content className="overflow-auto tabContent">
                 <Tab.Pane eventKey="first">
@@ -227,9 +235,7 @@ export default function Chat() {
                 <Tab.Pane eventKey="second">
                     {contactsCollection}
                 </Tab.Pane>
-                <Tab.Pane eventKey="third">
-                  <Notification />
-                </Tab.Pane>
+                
               </Tab.Content>                       
         </Tab.Container>
       </Card>
@@ -253,11 +259,14 @@ export default function Chat() {
         </Card>
 
           {/* Text area and send button */}
+      
         <Card className="buttonCard">
           {
             currentChat?
               <>
-              <Form onSubmit={handleSendChat} className="txtareaForm">
+              {
+                isActive?
+                <Form onSubmit={handleSendChat} className="txtareaForm">
                 <Form.Group className="textGrp">
                   <Form.Control
                   type="text"                
@@ -272,10 +281,14 @@ export default function Chat() {
                   isFilled?
                   <Button  type="submit" className="sndBtn" >Send</Button>
                   :
-                  <></>
+                  <Button  disabled className="sndBtn" >Send</Button>
                 }                
                 </>
               </Form>
+                :
+                <></>
+              }
+              
               </>
             :
               <></>
@@ -299,11 +312,8 @@ export default function Chat() {
                 <Nav.Item id="smchat" >
                   <Nav.Link eventKey="first" className="smchatLink" >Chat</Nav.Link>
                 </Nav.Item>
-                <Nav.Item  id="smcontacts" >
+                <Nav.Item id="smcontacts" >
                   <Nav.Link eventKey="second" className="smchatLink" >Contacts</Nav.Link>
-                </Nav.Item>
-                <Nav.Item id="smnotification" >
-                  <Nav.Link eventKey="third" className="smchatLink" >Notification</Nav.Link>
                 </Nav.Item>
               </Nav>
               <Tab.Content className="overflow-auto smtabContent">
@@ -317,14 +327,11 @@ export default function Chat() {
                 <Tab.Pane eventKey="second">
                     {contactsCollection}
                 </Tab.Pane>
-                <Tab.Pane eventKey="third">
-                  <Notification />
-                </Tab.Pane>
               </Tab.Content>                       
         </Tab.Container>
       </Card>
 
-      <Modal show={show} backdrop="static" keyboard={false} animation={false} >
+      <Modal show={show} backdrop="static" keyboard={false} animation={false} className="chatModal" >
               <Modal.Header>
                   <Modal.Title>
                     <div className="smbnrContainer">
@@ -335,14 +342,14 @@ export default function Chat() {
                             <ChatBanner activeChat={currentChat?.users} myId={currentUser._id} />
                       </Card.Body>
                       :
-                        <></>
+                      <></>
                     }
                     </div>
                   </Modal.Title>
                   <span className="modalClose" variant="secondary" onClick={handleClose}>&larr;</span>
               </Modal.Header>
                   
-                  <Modal.Body>
+                  <Modal.Body className="modalBody" >
                   {          
                     currentChat?
                       <ReactScrollableFeed className="smchatDiv">                             
@@ -360,7 +367,9 @@ export default function Chat() {
                   {
                     currentChat?
                       <>
-                      <Form onSubmit={handleSendChat} className="smtxtareaForm">
+                      {
+                        isActive?
+                        <Form onSubmit={handleSendChat} className="smtxtareaForm">
                         <Form.Group className="smtextGrp">
                           <Form.Control
                           type="text"                
@@ -375,10 +384,14 @@ export default function Chat() {
                           isFilled?
                           <Button  type="submit" className="smsndBtn" >Send</Button>
                           :
-                          <></>
+                          <Button className="smsndBtn" disabled >Send</Button>
                         }                
                         </>
                       </Form>
+                        :
+                        <></>
+                      }
+                      
                       </>
                     :
                       <></>
@@ -390,3 +403,4 @@ export default function Chat() {
     </div>
   )
 }
+

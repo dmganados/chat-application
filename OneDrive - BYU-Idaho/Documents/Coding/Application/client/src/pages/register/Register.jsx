@@ -1,6 +1,6 @@
 import React from "react";
 import 'bootstrap/dist/css/bootstrap.css';
-import {Container, Form, Button, Card, Col, Row} from 'react-bootstrap';
+import {Container, Form, Button, Card, Row} from 'react-bootstrap';
 import {useState, useEffect} from 'react';
 import { Link } from "react-router-dom";
 
@@ -14,6 +14,7 @@ function Register() {
   const [isActive, setIsActive] = useState(false);
   const [isCorrect, setIsCorrect]= useState(false);
 
+  // Create conditions for the form. The Save button will be enabled if the conditions are true.
   useEffect(() => {
       if (password1 === password2 && password1 !=='' && password2 !== '') {
         setIsCorrect(true);
@@ -29,12 +30,14 @@ function Register() {
 
   },[firstName, lastName, email, password1, password2])
 
+  // All users who are logged in can't go to register page. This page is available only for those who have not logged in.
   useEffect(() => {
 		if(localStorage.getItem('accessToken')) {
 			window.location.href = "/chat";
 		}
 	})
 
+  // Event handler for register button. Once the user clicks this button after meeting all the conditions, an account will be created. 
   const registerUser = async (eventSubmit) => {
     eventSubmit.preventDefault()
 

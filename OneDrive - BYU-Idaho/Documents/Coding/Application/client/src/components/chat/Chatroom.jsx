@@ -3,7 +3,8 @@ import { useState, useEffect } from "react";
 
 export default function Chatroom({conversation, currentUser}) {
     const [user, setUser] = useState(null);
-    let friendId = conversation.users.find((user) => user !== currentUser)
+    const [isActive, setIsActive] = useState(false);
+    let friendId = conversation.users.find((user) => user !== currentUser);
 
     useEffect(() =>{ 
         let getUser = async () => {
@@ -14,21 +15,46 @@ export default function Chatroom({conversation, currentUser}) {
         getUser();
     },[friendId])
 
+    useEffect(() => {
+        if (user !== false) {
+            setIsActive(true);
+        } else {
+            setIsActive(false);
+        }
+    },[user])
+
     return(
         <>        
         {/*Large Screen  */}
         <Card id="chtRmDiv">  
-            <Card.Body id="chtRmCard">
+        {
+            isActive?
+            <Card.Body className="chtRmCard">
             {user?.firstName} {user?.lastName}
-            </Card.Body>      
+            </Card.Body>
+            :
+            <Card.Body className="chtRmCard">
+                <i style={{backgroundColor: 'whitesmoke'}}>This person has deactivated</i>
+            </Card.Body>
+        }
+                 
         </Card>       
 
         {/* Small Screen */}
-        {/* <Card id="smchtRmDiv">  
-            <Card.Body id="smchtRmCard">
+        {
+            isActive?
+            <Card id="smchtRmDiv">  
+            <Card.Body className="smchtRmCard">
             {user?.firstName} {user?.lastName}
             </Card.Body>      
-        </Card>          */}
+            </Card>
+            :
+            <Card.Body className="smchtRmCard">
+                <i style={{backgroundColor: 'whitesmoke'}}>This person has deactivated</i>
+            </Card.Body>
+        }
+
+                 
         </>
     )
 }

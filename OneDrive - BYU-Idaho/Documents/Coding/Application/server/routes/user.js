@@ -7,7 +7,7 @@
 // Routing Component
     const route = exp.Router();
 
-// Routes - Creat
+// Routes - Create
     route.post('/register', (req, res) => {
         let userInfo = req.body;
         controller.userReg(userInfo).then(result => {
@@ -22,7 +22,7 @@
         })
     })
 
-// Routes - Read
+// Routes - Retrieve
     route.get('/profile', auth.verify, (req, res) => {
         let userData = auth.decode(req.headers.authorization);
         let userId = userData.id;
@@ -44,6 +44,22 @@
         });
     });
 
+// Routes - Update
+    route.put('/profile/update/:userId', (req, res) => {
+        let id = req.params.userId
+        let userInfo = req.body;
+        controller.updateUser(id, userInfo).then((result => {
+            res.send(result)
+        }))    
+    })
+
+// Routes - Delete
+    route.delete('/profile/delete/:userId', (req, res) => {
+        let id = req.params.userId
+        controller.deleteProfile(id).then(result => {
+            res.send(result)
+        })
+    })
 
 
 // Expose Route System

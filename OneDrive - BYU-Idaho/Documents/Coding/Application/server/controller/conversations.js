@@ -1,5 +1,6 @@
 const Conversation = require('../model/Conversation');
 
+// Create a connection with the other user before starting a conversation
 module.exports.connectUsers = (data) => {
     let sndr = data.senderId;
     let rcver = data.receiverId;
@@ -10,7 +11,6 @@ module.exports.connectUsers = (data) => {
 
     return newConvo.save().then((convo, error) => {
         if (convo) {
-            // return('Users are connected');
             return convo;
         } else {
             return false;
@@ -18,6 +18,7 @@ module.exports.connectUsers = (data) => {
     });
 };
 
+// Get all the conversation of the current user
 module.exports.getConvo = (id) => {
     return Conversation.find({users:id}).then(res => {
         return res

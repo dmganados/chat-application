@@ -1,6 +1,6 @@
 import React from "react";
 import { Form, Button, Container, Card, Row } from 'react-bootstrap';
-import { useState, useEffect, useContext } from 'react';
+import { useState, useEffect } from 'react';
 import { Link } from "react-router-dom";
 
 function Login() {
@@ -9,14 +9,12 @@ function Login() {
 	const [password, setPassword] = useState('');
 
 	// Create a side effect that will make the page reactive.
-
 	let dns = email.search('.com')
 	let addressSign = email.search('@')
 	const [isActive, setIsActive] = useState(false);
 
-
+	// Create a logic/condition that will evaluate the format of the email.
 	useEffect(() => {
-		// Create a logic/condition that will evaluate the format of the email.
 		if (dns !== -1 && addressSign !== -1 && password !== '') {
 			setIsActive(true);
 		} else {
@@ -24,12 +22,14 @@ function Login() {
 		}
 	},[email, password, addressSign, dns])
 
+	// Create an effect hook to redict the usert to chat page. Current user can only access chat and profile page if logged in.
 	useEffect(() => {
 		if(localStorage.getItem('accessToken')) {
 			window.location.href = "/chat";
 		}
 	})
 	
+	// User will be asked for credentials to log in.
 	const loginUser = async (event) => {
 		event.preventDefault();
 
@@ -61,7 +61,7 @@ function Login() {
 					}
 				})				
 			} else {
-				alert('Your email or password is incorrect.')
+				alert("Oops... Your email or password is incorrect")
 			}
 		})
 	};

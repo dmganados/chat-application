@@ -32,14 +32,14 @@
 
     .messageBox {
         margin-top: 2%;
-        border-color: #4C6663 !important;
+        background-color: #4C6663 !important;
     }
 
     .messageBox.ownMsg {
         display: flex;
         flex-direction: column;
         margin-top: 2%;
-        background-color: #4C6663;
+        background-color: #4C6663 !important;
     }
 
     .messageBox.ownMsg {
@@ -73,13 +73,21 @@
     }
 
     #chtRmDiv {
+        display: none;
+    }
+
+    #smchtRmDiv {
         border: none;
     } 
 
-    #chtRmCard {
+    .smchtRmCard {
         font-family: 'Lexend', sans-serif;
         background-color: whitesmoke;
         cursor: pointer;
+    }
+
+    .chtRmCard {
+        display: none;
     }
 
     #chtRmCard:hover {
@@ -99,9 +107,13 @@
     }
 
     .smfullName {
-        margin-left: 1rem;
+        /* margin-left: auto; */
+        /* margin-right: auto; */
+        /* align-items: center; */
+        /* text-align: center !important;
+        margin-left: 30%; */
         background-color: whitesmoke;
-        margin-top: 5% !important;
+        /* margin-top: 5% !important; */
     }
 
     .functions {
@@ -126,6 +138,7 @@
     .time {
         font-size: 12px;
         background-color: #4C6663;
+        margin-top: -2%;
     }
 
     .editArea {
@@ -220,7 +233,11 @@
         border: none;
     } 
 
-    #chtRmCard {
+    #smchtRmDiv, .smchtRmCard {
+        display: none;
+    }
+
+    .chtRmCard {
         font-family: 'Lexend', sans-serif;
         background-color: whitesmoke;
         cursor: pointer;
@@ -268,6 +285,7 @@
     .time {
         font-size: 12px;
         background-color: #4C6663;
+        margin-top: -1%;
     }
 
     .editArea {
@@ -363,6 +381,14 @@
         border: none;
     } 
 
+    #smchtRmDiv {
+        display: none;
+    }
+
+    .smchtRmCard {
+        display: none;
+    }
+
     #chtRmCard {
         font-family: 'Lexend', sans-serif;
         background-color: whitesmoke;
@@ -411,6 +437,7 @@
     .time {
         font-size: 12px;
         background-color: #4C6663;
+        margin-top: -1%;
     }
 
     .editArea {

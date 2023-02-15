@@ -29,38 +29,5 @@ route.get('/messages/:conversationId', (req, res) => {
     })
 });
 
-// route.get('/messages', auth.verify, (req, res) => {
-//     let user = auth.decode(req.headers.authorization);
-//     let userId = user.id
-//     controller.getAllMessages(userId).then(result => {
-//         res.send(result)
-//     })
-// })
-
-// Update Message
-route.put('/messages/update/:msgId', (req, res) => {
-    let id = req.params.msgId;
-    let convoId = req.body.conversationId;
-    let sndr = req.body.sender
-    let msg = req.body.message;
-    let data = {
-        conversationId: convoId,
-        sender: sndr,
-        message: msg,
-    }
-    controller.editMessage(id, data).then(result => {
-        res.send(result)
-    })
-})
-
-
-// Delete Message
-route.delete('/messages/delete/:msgId', (req, res) => {
-    let msgId = req.params.msgId;
-    controller.deleteMessage(msgId).then(result => {
-        res.send(result)
-    })
-})
-
 // Expose Route System
 module.exports = route;

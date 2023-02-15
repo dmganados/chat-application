@@ -9,6 +9,7 @@ const auth = require('../auth');
 // Routing Component
 const route = exp.Router();
 
+// Create a connection with the other user before starting a conversation
 route.post('/connect/:senderId/:receiverId', (req, res) => {    
     let sndr = req.params.senderId
     let rcvr = req.params.receiverId;
@@ -21,6 +22,7 @@ route.post('/connect/:senderId/:receiverId', (req, res) => {
     })
 });
 
+// Get all the conversation of the current user
 route.get('/connect/:senderId', (req, res) => {
     let user = req.params.senderId
     controller.getConvo(user).then(result => {

@@ -113,4 +113,8 @@
     .regLink:hover {
        color: black;
     }
+
+    .swal2-title, .swal2-x-mark, .swal2-x-mark-line-left, .swal2-x-mark-line-right {
+        background-color: white !important;
+    }
 }
